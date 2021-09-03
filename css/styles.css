@@ -50,6 +50,30 @@ body{
     font-size: 20px;
 }
 
+.leaderboard-option-element{
+  width: 50%;
+  float:left;
+  margin-bottom:10px;
+}
+
+.leaderboard-element-padding{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.leaderboard-option-button{
+  margin-left:10px;
+  margin-top:-3px;
+}
+
+.leaderboard-button-body{
+  background-color: rgb(25, 68, 102);
+  border: 1px solid white;
+}
+
 #map-image{
     width:100%;
 }
