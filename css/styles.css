@@ -50,7 +50,7 @@ body{
     font-size: 20px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 992px) {
   .leaderboard-option-element{
     width: 50%;
     float:left;
@@ -58,7 +58,7 @@ body{
   }
 }
 
-@media (max-width: 599px) {
+@media (max-width: 991px) {
   .leaderboard-option-element{
     width: 100%;
     float:left;
@@ -76,11 +76,11 @@ body{
 
 .leaderboard-label-container{
   text-align: center;
-  width:50%;
+  width:40%;
 }
 
 .leaderboard-button-container{
-  width:50%;
+  width:60%;
 }
 
 
