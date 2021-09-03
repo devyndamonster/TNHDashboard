@@ -50,11 +50,22 @@ body{
     font-size: 20px;
 }
 
-.leaderboard-option-element{
-  width: 50%;
-  float:left;
-  margin-bottom:10px;
+@media (min-width: 600px) {
+  .leaderboard-option-element{
+    width: 50%;
+    float:left;
+    margin-bottom:10px;
+  }
 }
+
+@media (max-width: 599px) {
+  .leaderboard-option-element{
+    width: 100%;
+    float:left;
+    margin-bottom:10px;
+  }
+}
+
 
 .leaderboard-element-padding{
   margin: 10px;
@@ -63,11 +74,15 @@ body{
   align-items: center;
 }
 
-
-.leaderboard-option-button{
-  margin-left:10px;
-  margin-top:-3px;
+.leaderboard-label-container{
+  text-align: center;
+  width:50%;
 }
+
+.leaderboard-button-container{
+  width:50%;
+}
+
 
 .leaderboard-button-body{
   background-color: rgb(25, 68, 102);
