@@ -39,6 +39,14 @@ body{
 
 #score-container{
     overflow: auto;
+    background-color: rgb(87, 87, 87);
+    width:100%;
+    flex-grow: 1;
+
+}
+
+#score-page-button-container{
+  margin-bottom: -15px;
 }
 
 .score-val{
@@ -84,7 +92,7 @@ body{
 }
 
 
-.leaderboard-button-body{
+.tnh-button-style{
   background-color: rgb(25, 68, 102);
   border: 1px solid white;
 }
@@ -99,6 +107,8 @@ body{
     padding: 15px;
     color: rgb(255, 255, 255);
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .body-padding{
