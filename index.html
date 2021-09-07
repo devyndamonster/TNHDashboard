@@ -11,6 +11,8 @@
 
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/leaderboard_selectors.js"></script>
 
   </head>
 <body>
@@ -44,12 +46,11 @@
                 
                 <div class="leaderboard-button-container">
                   <div class="dropdown leaderboard-option-button w-100">
-                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdown-map" data-bs-toggle="dropdown" aria-expanded="false">
                       Default
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><button class="dropdown-item" href="#">Default</button></li>
-                      <li><button class="dropdown-item" href="#">Winter Wasteland</button></li>
+                    <ul class="dropdown-menu" id="map-list" aria-labelledby="dropdown-map">
+
                     </ul>
                   </div>
                 </div>
@@ -61,17 +62,16 @@
               <div class="leaderboard-element-padding">
 
                 <div class="leaderboard-label-container">
-                  <label class="leaderboard-option-label">Map Selection</label>
+                  <label class="leaderboard-option-label">Equipment Mode</label>
                 </div>
                 
                 <div class="leaderboard-button-container">
                   <div class="dropdown leaderboard-option-button w-100">
-                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdown-equipment" data-bs-toggle="dropdown" aria-expanded="false">
                       Default
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><button class="dropdown-item" href="#">Default</button></li>
-                      <li><button class="dropdown-item" href="#">Winter Wasteland</button></li>
+                    <ul class="dropdown-menu" id="equipment-list" aria-labelledby="dropdown-equipment">
+                      
                     </ul>
                   </div>
                 </div>
@@ -83,17 +83,16 @@
               <div class="leaderboard-element-padding">
 
                 <div class="leaderboard-label-container">
-                  <label class="leaderboard-option-label">Map Selection</label>
+                  <label class="leaderboard-option-label">Game Length</label>
                 </div>
                 
                 <div class="leaderboard-button-container">
                   <div class="dropdown leaderboard-option-button w-100">
-                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdown-length" data-bs-toggle="dropdown" aria-expanded="false">
                       Default
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><button class="dropdown-item" href="#">Default</button></li>
-                      <li><button class="dropdown-item" href="#">Winter Wasteland</button></li>
+                    <ul class="dropdown-menu" id="length-list" aria-labelledby="dropdown-length">
+
                     </ul>
                   </div>
                 </div>
@@ -105,17 +104,16 @@
               <div class="leaderboard-element-padding">
 
                 <div class="leaderboard-label-container">
-                  <label class="leaderboard-option-label">Map Selection</label>
+                  <label class="leaderboard-option-label">Health Mode</label>
                 </div>
                 
                 <div class="leaderboard-button-container">
                   <div class="dropdown leaderboard-option-button w-100">
-                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdown-health" data-bs-toggle="dropdown" aria-expanded="false">
                       Default
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><button class="dropdown-item" href="#">Default</button></li>
-                      <li><button class="dropdown-item" href="#">Winter Wasteland</button></li>
+                    <ul class="dropdown-menu" id="health-list" aria-labelledby="dropdown-health">
+
                     </ul>
                   </div>
                 </div>
@@ -202,7 +200,6 @@
     
   </div>
 
-  <script src="js/main.js"></script>
   
 </body>
 </html>
