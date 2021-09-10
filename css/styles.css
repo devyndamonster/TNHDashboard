@@ -28,7 +28,6 @@ body{
 }
 
 .score-list-entry{
-    background-color: rgb(88, 88, 88);
     width:auto;
     padding-left:10px;
     padding-top:10px;
@@ -37,9 +36,13 @@ body{
     margin-bottom: 10px;;
 }
 
+.score-underline{
+  margin-top:-20px;
+  margin-bottom:-10px;
+}
+
 #score-container{
     overflow: auto;
-    background-color: rgb(87, 87, 87);
     width:100%;
     flex-grow: 1;
 

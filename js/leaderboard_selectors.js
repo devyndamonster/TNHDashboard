@@ -4,10 +4,59 @@ const EQUIPMENT_MODES = ["Limited", "Spawnlock"];
 const GAME_LENGTHS = ["5-Hold", "3-Hold", "Endless"];
 const HEALTH_MODES = ["Standard", "One-Hit"];
 
-var selection_map = MAPS[0];
-var selection_equipment = EQUIPMENT_MODES[0];
-var selection_length = GAME_LENGTHS[0];
-var selection_health = HEALTH_MODES[0];
+var selection_map = {'selection' : MAPS[0]};
+var selection_equipment = {'selection' : EQUIPMENT_MODES[0]};
+var selection_length = {'selection' : GAME_LENGTHS[0]};
+var selection_health = {'selection' : HEALTH_MODES[0]};
+
+
+var GetScoreSelectionURL = function(){
+  var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
+  url += "?map=" + selection_map.selection;
+  url += "&health=" + selection_health.selection;
+  url += "&equipment=" + selection_equipment.selection;
+  url += "&length=" + selection_length.selection;
+  url += "&startingIndex=0&count=5";
+
+  return url;
+}
+
+var PopulateScoreContainer = function(score_container){
+  var url = GetScoreSelectionURL();
+
+  $.get(url, function(data, status){
+    console.log(data);
+
+    score_container.innerHTML = "";
+
+    for(let j = 0; j < data.length; j++){
+      score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + data[j].name + "</a><a class=\"score-val\">" + data[j].score + "</a></div><hr class=\"score-underline\"></hr>";
+    }
+  });
+
+}
+
+var PopulateButtonList = function(dropdown_body, dropdown_text, score_container, option_list, selection_object, id_prefix){
+  dropdown_body.innerHTML = "";
+  for(let i = 0; i < option_list.length; i++){
+
+    const button = document.createElement("button");
+    button.classList.add("dropdown-item");
+    button.id = id_prefix + option_list[i].toLowerCase().replace(" ", "-"); 
+    button.textContent = option_list[i];
+    dropdown_body.appendChild(button);
+
+    button.onclick = function(){
+      selection_object.selection = option_list[i];
+      dropdown_text.innerHTML = option_list[i];
+      score_container.innerHTML = "";
+  
+      PopulateScoreContainer(score_container);
+    };
+  }
+}
+
+
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -28,79 +77,11 @@ document.addEventListener("DOMContentLoaded", function(){
   dropdown_length.innerHTML = GAME_LENGTHS[0];
   dropdown_health.innerHTML = HEALTH_MODES[0];
 
-  //Populate each of the dropdown menus with their respective options
-  map_list.innerHTML = "";
-  for(let i = 0; i < MAPS.length; i++){
+  PopulateButtonList(map_list, dropdown_map, score_container, MAPS, selection_map, "button-map-");
+  PopulateButtonList(equipment_list, dropdown_equipment, score_container, EQUIPMENT_MODES, selection_equipment, "button-equipment-");
+  PopulateButtonList(length_list, dropdown_length, score_container, GAME_LENGTHS, selection_length, "button-length-");
+  PopulateButtonList(health_list, dropdown_health, score_container, HEALTH_MODES, selection_health, "button-health-");
 
-    const button = document.createElement("button");
-    button.classList.add("dropdown-item");
-    button.id = "button-map-" + MAPS[i].toLowerCase().replace(" ", "-"); 
-    button.textContent = MAPS[i];
-    map_list.appendChild(button);
-    button.onclick = function(){
-      score_container.innerHTML = "";
-  
-      for(let j = 0; j < 5; j++){
-        score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + MAPS[i] + " Dude" + "</a><a class=\"score-val\">" + 140928435 + "</a></div>";
-      }
-      
-      dropdown_map.innerHTML = MAPS[i];
-    };
-
-  }
-
-  equipment_list.innerHTML = "";
-  for(let i = 0; i < EQUIPMENT_MODES.length; i++){
-    const button = document.createElement("button");
-    button.classList.add("dropdown-item");
-    button.id = "button-equipment-" + EQUIPMENT_MODES[i].toLowerCase().replace(" ", "-"); 
-    button.textContent = EQUIPMENT_MODES[i];
-    equipment_list.appendChild(button);
-    button.onclick = function(){
-      score_container.innerHTML = "";
-  
-      for(let j = 0; j < 5; j++){
-        score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + EQUIPMENT_MODES[i] + " Dude" + "</a><a class=\"score-val\">" + 140928435 + "</a></div>";
-      }
-      
-      dropdown_equipment.innerHTML = EQUIPMENT_MODES[i];
-    };
-  }
-
-  length_list.innerHTML = "";
-  for(let i = 0; i < GAME_LENGTHS.length; i++){
-    const button = document.createElement("button");
-    button.classList.add("dropdown-item");
-    button.id = "button-length-" + GAME_LENGTHS[i].toLowerCase().replace(" ", "-"); 
-    button.textContent = GAME_LENGTHS[i];
-    length_list.appendChild(button);
-    button.onclick = function(){
-      score_container.innerHTML = "";
-  
-      for(let j = 0; j < 5; j++){
-        score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + GAME_LENGTHS[i] + " Dude" + "</a><a class=\"score-val\">" + 140928435 + "</a></div>";
-      }
-      
-      dropdown_length.innerHTML = GAME_LENGTHS[i];
-    };
-  }
-
-  health_list.innerHTML = "";
-  for(let i = 0; i < HEALTH_MODES.length; i++){
-    const button = document.createElement("button");
-    button.classList.add("dropdown-item");
-    button.id = "button-health-" + HEALTH_MODES[i].toLowerCase().replace(" ", "-"); 
-    button.textContent = HEALTH_MODES[i];
-    health_list.appendChild(button);
-    button.onclick = function(){
-      score_container.innerHTML = "";
-  
-      for(let j = 0; j < 5; j++){
-        score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + HEALTH_MODES[i] + " Dude" + "</a><a class=\"score-val\">" + 140928435 + "</a></div>";
-      }
-      
-      dropdown_health.innerHTML = HEALTH_MODES[i];
-    };
-  }
+  PopulateScoreContainer(score_container);
 
 });
