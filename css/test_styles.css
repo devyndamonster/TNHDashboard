@@ -1,0 +1,129 @@
+@font-face {
+    font-family: Agency;
+    src: url("fonts/AGENCYB.ttf") format("truetype");
+    font-weight: bold;
+}
+
+body{
+    background-color: rgb(94, 146, 206);
+    font-family: Agency;
+}
+
+.navbar-container{
+  margin-bottom: 20px;
+}
+
+
+.body-container{
+  background-color: rgb(66, 100, 151);
+  border: 1px solid white;
+  height:100%;
+  color: white;
+}
+
+
+.navbar{
+    background-color: rgb(66, 100, 151);
+    border: 1px solid rgb(255, 255, 255);
+    border-right: 0;
+    border-left: 0;
+    border-top: 0;
+    color:rgb(255, 255, 255);
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-left: 10px;
+}
+
+.navbar-brand{
+    color: white;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#leaderboard-option-container{
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  .leaderboard-option-element{
+    width: 50%;
+    float:left;
+    margin-bottom:10px;
+  }
+
+}
+
+@media (max-width: 767px) {
+  .leaderboard-option-element{
+    width: 100%;
+    float:left;
+    margin-bottom:10px;
+  }
+
+}
+
+.leaderboard-element-padding{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leaderboard-label-container{
+  text-align: center;
+  width:40%;
+}
+
+.leaderboard-button-container{
+  width:60%;
+}
+
+.tnh-button-style{
+  background-color: rgb(25, 68, 102);
+  border: 1px solid white;
+}
+
+.score-list-entry{
+  width:auto;
+  padding-left:10px;
+  padding-top:10px;
+  padding-bottom: 10px;
+  font-size: 30px;
+  margin-bottom: 10px;;
+}
+
+.score-underline{
+  margin-top:-20px;
+  margin-bottom:-10px;
+}
+
+#score-list-container{
+  width:100%;
+  flex-grow: 1;
+}
+
+#score-page-button-container{
+  margin-bottom: -15px;
+  
+}
+
+.score-val{
+  float:right;
+  margin-right:10px;
+}
+
+.score-container{
+  display: flex; 
+  flex-direction: column;
+}
+
+#map-image{
+  width:100%;
+}
+
+
+
+
+
+
+

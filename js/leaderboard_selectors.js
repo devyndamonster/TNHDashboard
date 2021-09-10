@@ -60,7 +60,7 @@ var PopulateButtonList = function(dropdown_body, dropdown_text, score_container,
 
 document.addEventListener("DOMContentLoaded", function(){
 
-  var score_container = document.getElementById("score-container");
+  var score_container = document.getElementById("score-list-container");
 
   var map_list = document.getElementById("map-list");
   var equipment_list = document.getElementById("equipment-list");
