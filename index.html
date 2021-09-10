@@ -25,9 +25,9 @@
       </nav>
     </header>
   
-    <div class="container-xxl">
+    <div class="container-xl">
       <div class="row">
-        <div class="col-xxl-12 p-2">
+        <div class="col-xl-12 p-2">
           <div class="body-container p-3">
 
             <h3 class="text-center">Leaderboard Selection</h3>
@@ -124,9 +124,9 @@
       </div>
 
       <div class="row">
-        <div class="col-xxl-12">
+        <div class="col-xl-12">
           <div class="row">
-            <div class="col-xxl-4 p-2">
+            <div class="col-xl-4 p-2">
               <div class="body-container p-3 score-container">
 
                 <h3 class="text-center body-element-header">High Scores</h3>
@@ -139,9 +139,19 @@
                 <hr>
       
                 <div id="score-list-container">
-                  <p>
-                  Etiam justo arcu, faucibus luctus justo at, iaculis feugiat quam. Integer vel diam in leo ornare pharetra. Proin neque lectus, maximus at massa quis, ultricies egestas risus. Sed sit amet enim luctus, accumsan massa et, dictum velit. Nunc pellentesque quam eu condimentum sagittis. Vivamus lobortis mauris id gravida rutrum. Suspendisse cursus enim sed quam gravida, eu condimentum leo commodo. Curabitur id velit ac neque aliquam imperdiet. Nulla consectetur mi ac dolor feugiat aliquet id vel ex. Nunc pellentesque pulvinar pellentesque. Fusce mi nulla, consectetur sit amet erat vitae, blandit congue eros. Pellentesque condimentum lacus a nisl iaculis volutpat. Pellentesque imperdiet consequat mi, vitae consectetur dui ornare a. Nullam a cursus augue.
-                  </p>
+
+                  <button class="btn w-100 score-list-button" type="button">
+                    <a class="score-name">Jimbo</a>
+                    <a class="score-val">3841919</a>
+                  </button>
+                  
+                  <hr class="score-underline">
+
+                  <button class="btn w-100 score-list-button" type="button">
+                    <a class="score-name">Jimbo</a>
+                    <a class="score-val">3841919</a>
+                  </button>
+                  
                 </div>
       
                 <hr>
@@ -149,15 +159,15 @@
                 <nav aria-label="Page navigation example" id="score-page-button-container">
                   <ul class="pagination justify-content-center">
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
+                      <a class="page-link tnh-button-style" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                       </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link tnh-button-style" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link tnh-button-style" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link tnh-button-style" href="#">3</a></li>
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
+                      <a class="page-link tnh-button-style" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                       </a>
                     </li>
@@ -166,11 +176,15 @@
 
               </div>
             </div>
-            <div class="col-xxl-8 p-2">
+            <div class="col-xl-8 p-2">
               <div class="body-container p-3">
                 <h3 class="text-center body-element-header">Default Map</h3>
                 <hr>
-                <img src="TNH_Map.png" alt="Map" id="map-image">
+
+                <div class="map-container">
+                  <canvas width="622" height="571" id="map-canvas"></canvas>
+                </div>
+
               </div>
             </div>
           </div>
@@ -178,7 +192,7 @@
       </div>
         
       <div class="row">
-        <div class="col-xxl-12 p-2">
+        <div class="col-xl-12 p-2">
 
           <div class="body-container p-3">
             <h3 class="text-center body-element-header">Match Summary</h3>

@@ -16,7 +16,7 @@ var GetScoreSelectionURL = function(){
   url += "&health=" + selection_health.selection;
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
-  url += "&startingIndex=0&count=5";
+  url += "&startingIndex=0&count=10";
 
   return url;
 }
@@ -30,7 +30,14 @@ var PopulateScoreContainer = function(score_container){
     score_container.innerHTML = "";
 
     for(let j = 0; j < data.length; j++){
-      score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + data[j].name + "</a><a class=\"score-val\">" + data[j].score + "</a></div><hr class=\"score-underline\"></hr>";
+      var button_html = "";
+      button_html += "<button class=\"btn w-100 score-list-button\" type=\"button\">";
+      button_html += "<a class=\"score-name\">" + data[j].name + "</a>";
+      button_html += "<a class=\"score-val\">" + data[j].score + "</a>";
+      button_html += "</button>";
+      score_container.innerHTML += button_html;
+      
+      //score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + data[j].name + "</a><a class=\"score-val\">" + data[j].score + "</a></div><hr class=\"score-underline\"></hr>";
     }
   });
 
