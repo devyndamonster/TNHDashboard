@@ -43,12 +43,12 @@ var populateScoreContainer = (scoreContainer: HTMLElement) => {
     scoreContainer.innerHTML = "";
 
     for(let j = 0; j < data.length; j++){
-      var button_html = "";
-      button_html += "<button class=\"btn w-100 score-list-button\" type=\"button\">";
-      button_html += "<a class=\"score-name\">" + data[j].name + "</a>";
-      button_html += "<a class=\"score-val\">" + data[j].score + "</a>";
-      button_html += "</button>";
-      scoreContainer.innerHTML += button_html;
+      var buttonHTML = "";
+      buttonHTML += "<button class=\"btn w-100 score-list-button\" type=\"button\">";
+      buttonHTML += "<a class=\"score-name\">" + data[j].name + "</a>";
+      buttonHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
+      buttonHTML += "</button>";
+      scoreContainer.innerHTML += buttonHTML;
     }
   });
 
@@ -76,29 +76,33 @@ var populateButtonList = (dropdownBody: HTMLElement, dropdownText: HTMLElement, 
 
 
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", () => {
 
   var score_container = document.getElementById("score-list-container");
 
-  var map_list = document.getElementById("map-list");
-  var equipment_list = document.getElementById("equipment-list");
-  var length_list = document.getElementById("length-list");
-  var health_list = document.getElementById("health-list");
+  var elements = {
+      map : document.getElementById("map-list"),
+      equipment : document.getElementById("equipment-list"),
+      length : document.getElementById("length-list"),
+      health : document.getElementById("health-list"),
+  };
 
-  var dropdown_map = document.getElementById("dropdown-map");
-  var dropdown_equipment = document.getElementById("dropdown-equipment");
-  var dropdown_length = document.getElementById("dropdown-length");
-  var dropdown_health = document.getElementById("dropdown-health");
+  var dropdowns = {
+      map : document.getElementById("dropdown-map"),
+      equipment : document.getElementById("dropdown-equipment"),
+      length : document.getElementById("dropdown-length"),
+      health : document.getElementById("dropdown-health"),
+  };
 
-  dropdown_map.innerHTML = MAPS[0];
-  dropdown_equipment.innerHTML = EQUIPMENT_MODES[0];
-  dropdown_length.innerHTML = GAME_LENGTHS[0];
-  dropdown_health.innerHTML = HEALTH_MODES[0];
+  dropdowns.map.innerHTML = MAPS[0];
+  dropdowns.equipment.innerHTML = EQUIPMENT_MODES[0];
+  dropdowns.length.innerHTML = GAME_LENGTHS[0];
+  dropdowns.health.innerHTML = HEALTH_MODES[0];
 
-  populateButtonList(map_list, dropdown_map, score_container, MAPS, selections.map, "button-map-");
-  populateButtonList(equipment_list, dropdown_equipment, score_container, EQUIPMENT_MODES, selections.equipment, "button-equipment-");
-  populateButtonList(length_list, dropdown_length, score_container, GAME_LENGTHS, selections.length, "button-length-");
-  populateButtonList(health_list, dropdown_health, score_container, HEALTH_MODES, selections.health, "button-health-");
+  populateButtonList(elements.map, dropdowns.map, score_container, MAPS, selections.map, "button-map-");
+  populateButtonList(elements.equipment, dropdowns.equipment, score_container, EQUIPMENT_MODES, selections.equipment, "button-equipment-");
+  populateButtonList(elements.length, dropdowns.length, score_container, GAME_LENGTHS, selections.length, "button-length-");
+  populateButtonList(elements.health, dropdowns.health, score_container, HEALTH_MODES, selections.health, "button-health-");
 
   populateScoreContainer(score_container);
 
