@@ -35,6 +35,8 @@ var getScoreSelectionURL = () => {
 var populateScoreContainer = (scoreContainer: HTMLElement) => {
   var url = getScoreSelectionURL();
 
+  //I do not want JQuery types
+  // @ts-ignore 
   $.get(url, (data: LeaderboardEntry[], status) => {
     console.log(data);
 
