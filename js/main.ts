@@ -72,7 +72,7 @@ const DEFAULT_OBJECTIVE_LIST: Objective[] = [
 document.addEventListener("DOMContentLoaded", () => {
  
     var canvas = document.getElementById("map-canvas") as HTMLCanvasElement,
-    ctx = canvas.getContext("2d");
+    ctx = canvas.getContext("2d")!;
     ctx.imageSmoothingEnabled = false;
 
     var background = new Image();
