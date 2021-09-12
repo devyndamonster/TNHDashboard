@@ -1,3 +1,6 @@
+/**
+ * Leaderboard entry for a specific TNH category
+ */
 interface LeaderboardEntry {
     equipmentMode: string;
     gameLength: string;
@@ -21,6 +24,10 @@ var selections = {
     health:      HEALTH_MODES[0],
 };
 
+/**
+ * Gets the score URL from the TNH API
+ * @returns Score selection URL from the API
+ */
 var getScoreSelectionURL = () => {
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
   url += "?map=" + selections.map;
@@ -32,6 +39,10 @@ var getScoreSelectionURL = () => {
   return url;
 }
 
+/**
+ * Populates the score container with scores from the API
+ * @param scoreContainer Container to populate
+ */
 var populateScoreContainer = (scoreContainer: HTMLElement) => {
   var url = getScoreSelectionURL();
 
@@ -54,6 +65,15 @@ var populateScoreContainer = (scoreContainer: HTMLElement) => {
 
 }
 
+/**
+ * Populates a list of buttons
+ * @param dropdownBody Body of the dropdown
+ * @param dropdownText Text of the dropdown
+ * @param scoreContainer Score list
+ * @param optionList Option list
+ * @param selection Selection to save the selected entry to
+ * @param idPrefix Prefix to give to the ID
+ */
 var populateButtonList = (dropdownBody: HTMLElement, dropdownText: HTMLElement, scoreContainer: HTMLElement, optionList: string[], selection: string, idPrefix: string) => {
   dropdownBody.innerHTML = "";
   for(let i = 0; i < optionList.length; i++){

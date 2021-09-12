@@ -1,8 +1,14 @@
+/**
+ * Point on the screen
+ */
 interface Point {
     x: number;
     y: number;
 }
 
+/**
+ * Color (RGBA)
+ */
 interface Color {
     r: number;
     g: number;
@@ -10,13 +16,32 @@ interface Color {
     a: number;
 };
 
-function ColorString(color: Color): string {
+/**
+ * Makes a string repersentation of the Color interface
+ * @param color color to turn into a string
+ * @returns string reperesentation of the color
+ */
+function colorString(color: Color): string {
     return `rgba(${color.r},${color.g},${color.b},${color.a}`;
 }
 
+/**
+ * Objective point on the TNH map
+ */
 class Objective {   
+    /**
+     * Position of the objective
+     */
     position: Point;
+
+    /**
+     * Radius of the counter on the map
+     */
     radius: number;
+
+    /**
+     * Color of the counter on the map
+     */
     color: Color;
 
     constructor(position: Point, radius: number, color: Color) {
@@ -61,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             var obj = DEFAULT_OBJECTIVE_LIST[i];
             var circle = new Path2D();
             circle.arc(obj.position.x, obj.position.y, obj.radius, 0, 2 * Math.PI);
-            ctx.fillStyle = ColorString(obj.color);
+            ctx.fillStyle = colorString(obj.color);
             ctx.fill(circle) 
         }
     }
