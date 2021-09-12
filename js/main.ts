@@ -27,7 +27,7 @@ class Objective {
 }
 
 //why devyn
-const ObjectiveListDefault: Objective[] = [
+const DEFAULT_OBJECTIVE_LIST: Objective[] = [
     new Objective({ x: 90,  y: 130 }, 5, { r: 255, g: 0, b: 0, a: 1 }),
     new Objective({ x: 217, y: 63  }, 5, { r: 255, g: 0, b: 0, a: 1 }),
     new Objective({ x: 270, y: 180 }, 5, { r: 255, g: 0, b: 0, a: 1 }),
@@ -44,7 +44,7 @@ const ObjectiveListDefault: Objective[] = [
 ];
 
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", () => {
  
     var canvas = document.getElementById("map-canvas") as HTMLCanvasElement,
     ctx = canvas.getContext("2d");
@@ -54,11 +54,11 @@ document.addEventListener("DOMContentLoaded", function(){
     background.src = "TNH_Map.png";
 
     // Make sure the image is loaded first otherwise nothing will draw.
-    background.onload = function() {
+    background.onload = () => {
         ctx.drawImage(background, 0, 0, 622, 571);  
 
-        for(let i = 0; i < ObjectiveListDefault.length; i++){
-            var obj = ObjectiveListDefault[i];
+        for(let i = 0; i < DEFAULT_OBJECTIVE_LIST.length; i++){
+            var obj = DEFAULT_OBJECTIVE_LIST[i];
             var circle = new Path2D();
             circle.arc(obj.position.x, obj.position.y, obj.radius, 0, 2 * Math.PI);
             ctx.fillStyle = ColorString(obj.color);
