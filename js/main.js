@@ -1,7 +1,15 @@
 ;
-function ColorString(color) {
+/**
+ * Makes a string repersentation of the Color interface
+ * @param color color to turn into a string
+ * @returns string reperesentation of the color
+ */
+function colorString(color) {
     return "rgba(" + color.r + "," + color.g + "," + color.b + "," + color.a;
 }
+/**
+ * Objective point on the TNH map
+ */
 var Objective = /** @class */ (function () {
     function Objective(position, radius, color) {
         this.position = position;
@@ -11,7 +19,7 @@ var Objective = /** @class */ (function () {
     return Objective;
 }());
 //why devyn
-var ObjectiveListDefault = [
+var DEFAULT_OBJECTIVE_LIST = [
     new Objective({ x: 90, y: 130 }, 5, { r: 255, g: 0, b: 0, a: 1 }),
     new Objective({ x: 217, y: 63 }, 5, { r: 255, g: 0, b: 0, a: 1 }),
     new Objective({ x: 270, y: 180 }, 5, { r: 255, g: 0, b: 0, a: 1 }),
@@ -34,11 +42,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // Make sure the image is loaded first otherwise nothing will draw.
     background.onload = function () {
         ctx.drawImage(background, 0, 0, 622, 571);
-        for (var i = 0; i < ObjectiveListDefault.length; i++) {
-            var obj = ObjectiveListDefault[i];
+        for (var i = 0; i < DEFAULT_OBJECTIVE_LIST.length; i++) {
+            var obj = DEFAULT_OBJECTIVE_LIST[i];
             var circle = new Path2D();
             circle.arc(obj.position.x, obj.position.y, obj.radius, 0, 2 * Math.PI);
-            ctx.fillStyle = ColorString(obj.color);
+            ctx.fillStyle = colorString(obj.color);
             ctx.fill(circle);
         }
     };
