@@ -65,6 +65,10 @@ var populateScoreContainer = (scoreContainer: HTMLElement) => {
 
 }
 
+type optionCategoryNames = "map" | "equipment" | "length" | "health"; 
+
+type optionCategory = { map: HTMLElement, equipment: HTMLElement, length: HTMLElement, health: HTMLElement };
+
 /**
  * Populates a list of buttons
  * @param dropdownBody Body of the dropdown
@@ -74,19 +78,19 @@ var populateScoreContainer = (scoreContainer: HTMLElement) => {
  * @param selection Selection to save the selected entry to
  * @param idPrefix Prefix to give to the ID
  */
-var populateButtonList = (dropdownBody: HTMLElement, dropdownText: HTMLElement, scoreContainer: HTMLElement, optionList: string[], selection: string, idPrefix: string) => {
-  dropdownBody.innerHTML = "";
+var populateButtonList = (category: optionCategoryNames, dropdownBody: optionCategory, dropdownText: optionCategory, scoreContainer: HTMLElement, optionList: string[], selection: { map: string, equipment: string, length: string, health: string }) => {
+  dropdownBody[category].innerHTML = "";
   for(let i = 0; i < optionList.length; i++){
 
     const button = document.createElement("button");
     button.classList.add("dropdown-item");
-    button.id = idPrefix + optionList[i].toLowerCase().replace(" ", "-"); 
+    button.id = `button-${category}-${optionList[i].toLowerCase().replace(" ", "-")}`; 
     button.textContent = optionList[i];
-    dropdownBody.appendChild(button);
+    dropdownBody[category].appendChild(button);
 
     button.onclick = () => {
-      selection = optionList[i];
-      dropdownText.innerHTML = optionList[i];
+      selection[category] = optionList[i];
+      dropdownText[category].innerHTML = optionList[i];
       scoreContainer.innerHTML = "";
   
       populateScoreContainer(scoreContainer);
@@ -119,10 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
   dropdowns.length.innerHTML = GAME_LENGTHS[0];
   dropdowns.health.innerHTML = HEALTH_MODES[0];
 
-  populateButtonList(elements.map, dropdowns.map, score_container, MAPS, selections.map, "button-map-");
-  populateButtonList(elements.equipment, dropdowns.equipment, score_container, EQUIPMENT_MODES, selections.equipment, "button-equipment-");
-  populateButtonList(elements.length, dropdowns.length, score_container, GAME_LENGTHS, selections.length, "button-length-");
-  populateButtonList(elements.health, dropdowns.health, score_container, HEALTH_MODES, selections.health, "button-health-");
+  populateButtonList("map",         elements, dropdowns, score_container, MAPS,             selections);
+  populateButtonList("equipment",   elements, dropdowns, score_container, EQUIPMENT_MODES,  selections);
+  populateButtonList("length",      elements, dropdowns, score_container, GAME_LENGTHS,     selections);
+  populateButtonList("health",      elements, dropdowns, score_container, HEALTH_MODES,     selections);
 
   populateScoreContainer(score_container);
 
