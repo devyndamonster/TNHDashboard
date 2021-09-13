@@ -26,18 +26,25 @@ var PopulateScoreContainer = function(score_container){
 
   $.get(url, function(data, status){
     console.log(data);
-
+    
     score_container.innerHTML = "";
 
     for(let j = 0; j < data.length; j++){
-      var button_html = "";
-      button_html += "<button class=\"btn w-100 score-list-button\" type=\"button\">";
-      button_html += "<a class=\"score-name\">" + data[j].name + "</a>";
-      button_html += "<a class=\"score-val\">" + data[j].score + "</a>";
-      button_html += "</button>";
-      score_container.innerHTML += button_html;
-      
-      //score_container.innerHTML += "<div class=\"score-list-entry\"><a>" + data[j].name + "</a><a class=\"score-val\">" + data[j].score + "</a></div><hr class=\"score-underline\"></hr>";
+
+      const button = document.createElement("button");
+      button.classList.add("btn");
+      button.classList.add("w-100");
+      button.classList.add("score-list-button");
+      score_container.appendChild(button);
+
+      button.innerHTML = "";
+      button.innerHTML += "<a class=\"score-name\">" + data[j].name + "</a>";
+      button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
+
+      button.onclick = function(){
+        console.log((JSON.parse(data[j].holdActions)))
+        console.log((JSON.parse(data[j].holdStats)))
+      };
     }
   });
 
@@ -56,7 +63,7 @@ var PopulateButtonList = function(dropdown_body, dropdown_text, score_container,
     button.onclick = function(){
       selection_object.selection = option_list[i];
       dropdown_text.innerHTML = option_list[i];
-      score_container.innerHTML = "";
+      score_container.innerHTML = "<h3>Loading...</h3>";
   
       PopulateScoreContainer(score_container);
     };
