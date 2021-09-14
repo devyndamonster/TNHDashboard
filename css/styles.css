@@ -163,11 +163,19 @@ body{
 
 .body-sub-container{
   background-color: rgba(255, 255, 255, 0.164);
+  border-radius: 3px;
 }
 
 .body-sub-header{
   background-color: rgba(255, 255, 255, 0.164);
   width: fit-content;
+  border-radius: 3px;
+}
+
+.summary-element{
+  background-color: rgba(255, 255, 255, 0.13);
+  border-radius: 3px;
+  padding: 5px 5px 5px 10px;
 }
 
 

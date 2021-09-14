@@ -10,7 +10,7 @@ var selection_length = {'selection' : GAME_LENGTHS[0]};
 var selection_health = {'selection' : HEALTH_MODES[0]};
 
 
-var GetScoreSelectionURL = function(){
+function GetScoreSelectionURL(){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
   url += "?map=" + selection_map.selection;
   url += "&health=" + selection_health.selection;
@@ -21,7 +21,7 @@ var GetScoreSelectionURL = function(){
   return url;
 }
 
-var PopulateScoreContainer = function(score_container){
+function PopulateScoreContainer(score_container){
   var url = GetScoreSelectionURL();
 
   $.get(url, function(data, status){
@@ -42,15 +42,111 @@ var PopulateScoreContainer = function(score_container){
       button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
 
       button.onclick = function(){
-        console.log((JSON.parse(data[j].holdActions)))
-        console.log((JSON.parse(data[j].holdStats)))
+        console.log(JSON.parse(data[j].holdActions));
+        console.log(JSON.parse(data[j].holdStats));
+        PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
+        DrawPlayerPath(JSON.parse(data[j].holdActions));
       };
     }
   });
-
 }
 
-var PopulateButtonList = function(dropdown_body, dropdown_text, score_container, option_list, selection_object, id_prefix){
+function DrawWrapper(start, end){
+  function f(){
+    map_canvas.DrawArrow(start, end);
+  }
+  return f;
+}
+
+function DrawPlayerPath(holdEvents){
+
+  map_canvas.draw_steps.length = 0;
+  map_canvas.draw_steps.push(map_canvas.DrawAllHolds);
+  map_canvas.draw_steps.push(map_canvas.DrawAllSupply);
+
+  var previousPoint = null;
+
+  for(let i = 0; i < holdEvents.length; i++){
+    for(let j = 0; j < holdEvents[i].length; j++){
+      var event = holdEvents[i][j];
+
+      if(event.startsWith("Spawned At")){
+        event = event.replace("Spawned At ", "");
+        if(event.includes("Supply")){
+          event = event.replace("Supply ", "");
+          var index = parseInt(event);
+
+          previousPoint = SupplyListDefault[index];
+          continue;
+        }
+      }
+
+      if(event.startsWith("Entered")){
+        event = event.replace("Entered ", "");
+        if(event.includes("Supply")){
+          event = event.replace("Supply ", "");
+          var index = parseInt(event);
+
+          var start = Object.assign({}, previousPoint);
+          var end = Object.assign({}, SupplyListDefault[index]);
+          console.log("Drawing line (start to end)");
+          console.log(start);
+          console.log(end);
+
+          map_canvas.draw_steps.push(DrawWrapper(start, end));
+
+          previousPoint = SupplyListDefault[index];
+          continue;
+        }
+
+        if(event.includes("Hold")){
+          event = event.replace("Hold ", "");
+          var index = parseInt(event);
+
+          var start = Object.assign({}, previousPoint);
+          var end = Object.assign({}, ObjectiveListDefault[index]);
+          console.log("Drawing line (start to end)");
+          console.log(start);
+          console.log(end);
+
+          map_canvas.draw_steps.push(DrawWrapper(start, end));
+
+          previousPoint = ObjectiveListDefault[index];
+          continue;
+        }
+      }
+    }
+  }
+  map_canvas.Refresh("TNH_Map.png");
+}
+
+function PopulateMatchSummary(holdEvents, holdStats){
+
+  var summary_container = document.getElementById("summary-container");
+  var summary_html = "";
+
+  for(let k = 0; k < holdEvents.length; k++){
+    summary_html += '<div class="p-2"><h4 class="p-2 body-sub-header"> Hold ' + (k + 1) + '</h4>';
+    summary_html += '<div class="body-sub-container p-2"><div class="row"><div class="col-6"><h4 class="text-center"> Hold Events </h4>';
+    for(let l = 0; l < holdEvents[k].length; l++){
+      summary_html += '<h5 class="summary-element">' + holdEvents[k][l] + '</h5>';
+    }
+    summary_html += '</div><div class="col-6"><h4 class="text-center"> Hold Stats </h4>';
+
+    summary_html += '<h5 class="summary-element">Sosigs Killed : ' + holdStats[k].SosigsKilled + '</h5>'
+    summary_html += '<h5 class="summary-element">Melee Kills : ' + holdStats[k].MeleeKills + '</h5>'
+    summary_html += '<h5 class="summary-element">Headshots : ' + holdStats[k].Headshots + '</h5>'
+    summary_html += '<h5 class="summary-element">Tokens Spent : ' + holdStats[k].TokensSpent + '</h5>'
+    summary_html += '<h5 class="summary-element">Guns Recycled : ' + holdStats[k].GunsRecycled + '</h5>'
+    summary_html += '<h5 class="summary-element">Ammo Spent : ' + holdStats[k].AmmoSpent + '</h5>'
+
+    summary_html += '</div></div></div></div>';
+  }
+
+  summary_container.innerHTML = summary_html;
+}
+
+function PopulateButtonList(dropdown_body, dropdown_text, score_container, option_list, selection_object, id_prefix){
   dropdown_body.innerHTML = "";
   for(let i = 0; i < option_list.length; i++){
 
