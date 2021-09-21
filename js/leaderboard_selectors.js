@@ -55,7 +55,7 @@ function PopulateScoreContainer(page){
     
     score_container.innerHTML = "";
 
-    for(let j = 0; j < data.length; j++){
+    for(let j = 0; j < 10; j++){
 
       const button = document.createElement("button");
       button.classList.add("btn");
@@ -64,15 +64,25 @@ function PopulateScoreContainer(page){
       score_container.appendChild(button);
 
       button.innerHTML = "";
-      button.innerHTML += "<a class=\"score-name\">" + data[j].name + "</a>";
-      button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
 
-      button.onclick = function(){
-        console.log(JSON.parse(data[j].holdActions));
-        console.log(JSON.parse(data[j].holdStats));
-        PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
-        DrawPlayerPath(JSON.parse(data[j].holdActions));
-      };
+      if(data.length > j){
+        button.innerHTML += "<a class=\"score-name\">" + data[j].name + "</a>";
+        button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
+
+        button.onclick = function(){
+          console.log(JSON.parse(data[j].holdActions));
+          console.log(JSON.parse(data[j].holdStats));
+          PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
+          DrawPlayerPath(JSON.parse(data[j].holdActions));
+        };
+      }
+      else{
+        button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
+        button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
+      }
+      
+
+     
     }
   });
 }
@@ -83,10 +93,10 @@ function PopulatePageButtons(){
 
   $.get(url, function(data, status){
 
-    var page_count = Math.floor(data / 10) + 1;
+    var page_count = Math.max(1, Math.floor((data - 1) / 10) + 1);
     page_button_container.innerHTML = "";
 
-    console.log("Page count: " + page_count);
+    console.log("Page count: " + page_count + ", Scores: " + data);
     
     //Create the previous page button
     const prev_li = document.createElement("li");
