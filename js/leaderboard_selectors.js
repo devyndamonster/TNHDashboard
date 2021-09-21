@@ -9,20 +9,46 @@ var selection_equipment = {'selection' : EQUIPMENT_MODES[0]};
 var selection_length = {'selection' : GAME_LENGTHS[0]};
 var selection_health = {'selection' : HEALTH_MODES[0]};
 
+var curr_page = 0;
 
-function GetScoreSelectionURL(){
+var score_container = {};
+var page_button_container = {};
+
+var map_list = {};
+var equipment_list = {};
+var length_list = {};
+var health_list = {};
+
+var dropdown_map = {};
+var dropdown_equipment = {};
+var dropdown_length = {};
+var dropdown_health = {};
+
+function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
   url += "?map=" + selection_map.selection;
   url += "&health=" + selection_health.selection;
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
-  url += "&startingIndex=0&count=10";
+  url += "&startingIndex=" + page * 10 + "&count=10";
 
   return url;
 }
 
-function PopulateScoreContainer(score_container){
-  var url = GetScoreSelectionURL();
+
+function GetScoreSelectionCountURL(){
+  var url = "https://tnh-dashboard.azure-api.net/v1/api/scores/count";
+  url += "?map=" + selection_map.selection;
+  url += "&health=" + selection_health.selection;
+  url += "&equipment=" + selection_equipment.selection;
+  url += "&length=" + selection_length.selection;
+
+  return url;
+}
+
+
+function PopulateScoreContainer(page){
+  var url = GetScoreSelectionURL(page);
 
   $.get(url, function(data, status){
     console.log(data);
@@ -50,6 +76,85 @@ function PopulateScoreContainer(score_container){
     }
   });
 }
+
+
+function PopulatePageButtons(){
+  var url = GetScoreSelectionCountURL();
+
+  $.get(url, function(data, status){
+
+    var page_count = Math.floor(data / 10) + 1;
+    page_button_container.innerHTML = "";
+
+    console.log("Page count: " + page_count);
+    
+    //Create the previous page button
+    const prev_li = document.createElement("li");
+    prev_li.classList.add("page-item");
+    page_button_container.appendChild(prev_li);
+
+    const prev_button = document.createElement("button");
+    prev_button.classList.add("page-link");
+    prev_button.classList.add("tnh-button-style");
+    prev_button.innerHTML = "&laquo;"
+    prev_li.appendChild(prev_button);
+
+    prev_button.onclick = function(){
+      console.log("Prev Page");
+      var next_page = Math.max(0, curr_page - 1);
+      if(curr_page != next_page){
+        curr_page = next_page;
+        PopulateScoreContainer(curr_page);
+      }
+    }
+
+    //Create Middle Page Buttons
+    for(let i = 0; i < page_count; i++){
+      const page_li = document.createElement("li");
+      page_li.classList.add("page-item");
+      page_button_container.appendChild(page_li);
+
+      const page_button = document.createElement("button");
+      page_button.classList.add("page-link");
+      page_button.classList.add("tnh-button-style");
+      page_button.innerHTML = (i + 1);
+      page_li.appendChild(page_button);
+
+      page_button.onclick = function(){
+        console.log("Go to page: " + i);
+        var next_page = i;
+        if(curr_page != next_page){
+          curr_page = next_page
+          PopulateScoreContainer(curr_page);
+        }
+      }
+
+    }
+
+    //Create Next Page Buttons
+    const next_li = document.createElement("li");
+    next_li.classList.add("page-item");
+    page_button_container.appendChild(next_li);
+
+    const next_button = document.createElement("button");
+    next_button.classList.add("page-link");
+    next_button.classList.add("tnh-button-style");
+    next_button.innerHTML = "&raquo;"
+    next_li.appendChild(next_button);
+
+    next_button.onclick = function(){
+      console.log("Next Page");
+
+      var next_page = Math.min(page_count - 1, curr_page + 1);
+      if(curr_page != next_page){
+        curr_page = next_page;
+        PopulateScoreContainer(curr_page);
+      }
+    }
+
+  });
+}
+
 
 function DrawWrapper(start, end){
   function f(){
@@ -146,7 +251,7 @@ function PopulateMatchSummary(holdEvents, holdStats){
   summary_container.innerHTML = summary_html;
 }
 
-function PopulateButtonList(dropdown_body, dropdown_text, score_container, option_list, selection_object, id_prefix){
+function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection_object, id_prefix){
   dropdown_body.innerHTML = "";
   for(let i = 0; i < option_list.length; i++){
 
@@ -161,7 +266,9 @@ function PopulateButtonList(dropdown_body, dropdown_text, score_container, optio
       dropdown_text.innerHTML = option_list[i];
       score_container.innerHTML = "<h3>Loading...</h3>";
   
-      PopulateScoreContainer(score_container);
+      curr_page = 0;
+      PopulateScoreContainer(curr_page);
+      PopulatePageButtons();
     };
   }
 }
@@ -170,28 +277,29 @@ function PopulateButtonList(dropdown_body, dropdown_text, score_container, optio
 
 document.addEventListener("DOMContentLoaded", function(){
 
-  var score_container = document.getElementById("score-list-container");
+  score_container = document.getElementById("score-list-container");
+  page_button_container = document.getElementById("page-button-list");
 
-  var map_list = document.getElementById("map-list");
-  var equipment_list = document.getElementById("equipment-list");
-  var length_list = document.getElementById("length-list");
-  var health_list = document.getElementById("health-list");
+  map_list = document.getElementById("map-list");
+  equipment_list = document.getElementById("equipment-list");
+  length_list = document.getElementById("length-list");
+  health_list = document.getElementById("health-list");
 
-  var dropdown_map = document.getElementById("dropdown-map");
-  var dropdown_equipment = document.getElementById("dropdown-equipment");
-  var dropdown_length = document.getElementById("dropdown-length");
-  var dropdown_health = document.getElementById("dropdown-health");
+  dropdown_map = document.getElementById("dropdown-map");
+  dropdown_equipment = document.getElementById("dropdown-equipment");
+  dropdown_length = document.getElementById("dropdown-length");
+  dropdown_health = document.getElementById("dropdown-health");
 
   dropdown_map.innerHTML = MAPS[0];
   dropdown_equipment.innerHTML = EQUIPMENT_MODES[0];
   dropdown_length.innerHTML = GAME_LENGTHS[0];
   dropdown_health.innerHTML = HEALTH_MODES[0];
 
-  PopulateButtonList(map_list, dropdown_map, score_container, MAPS, selection_map, "button-map-");
-  PopulateButtonList(equipment_list, dropdown_equipment, score_container, EQUIPMENT_MODES, selection_equipment, "button-equipment-");
-  PopulateButtonList(length_list, dropdown_length, score_container, GAME_LENGTHS, selection_length, "button-length-");
-  PopulateButtonList(health_list, dropdown_health, score_container, HEALTH_MODES, selection_health, "button-health-");
+  PopulateButtonList(map_list, dropdown_map, MAPS, selection_map, "button-map-");
+  PopulateButtonList(equipment_list, dropdown_equipment, EQUIPMENT_MODES, selection_equipment, "button-equipment-");
+  PopulateButtonList(length_list, dropdown_length, GAME_LENGTHS, selection_length, "button-length-");
+  PopulateButtonList(health_list, dropdown_health, HEALTH_MODES, selection_health, "button-health-");
 
-  PopulateScoreContainer(score_container);
-
+  PopulateScoreContainer(curr_page);
+  PopulatePageButtons();
 });

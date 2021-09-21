@@ -1,4 +1,6 @@
 
+
+
 function Objective(pos_x, pos_y, radius, col_r, col_g, col_b){
     this.pos_x = pos_x;
     this.pos_y = pos_y;
