@@ -175,6 +175,12 @@ body{
   color: rgb(0, 88, 170);
 }
 
+.selected{
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(0, 88, 170);
+  color: rgb(0, 88, 170);
+}
+
 .body-sub-container{
   background-color: rgba(255, 255, 255, 0.164);
   border-radius: 3px;

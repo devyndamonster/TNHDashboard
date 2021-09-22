@@ -24,6 +24,8 @@ var dropdown_equipment = {};
 var dropdown_length = {};
 var dropdown_health = {};
 
+var page_buttons = [];
+
 function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
   url += "?map=" + selection_map.selection;
@@ -94,6 +96,7 @@ function PopulatePageButtons(){
   $.get(url, function(data, status){
 
     var page_count = Math.max(1, Math.floor((data - 1) / 10) + 1);
+    page_buttons = [];
     page_button_container.innerHTML = "";
 
     console.log("Page count: " + page_count + ", Scores: " + data);
@@ -114,6 +117,12 @@ function PopulatePageButtons(){
       var next_page = Math.max(0, curr_page - 1);
       if(curr_page != next_page){
         curr_page = next_page;
+
+        for(let j = 0; j < page_buttons.length; j++){
+          page_buttons[j].classList.remove('selected');
+        }
+
+        page_buttons[curr_page].classList.add('selected');
         PopulateScoreContainer(curr_page);
       }
     }
@@ -130,15 +139,26 @@ function PopulatePageButtons(){
       page_button.innerHTML = (i + 1);
       page_li.appendChild(page_button);
 
+      if(i == 0){
+        page_button.classList.add('selected');
+      }
+
+      page_buttons.push(page_button);
+
       page_button.onclick = function(){
         console.log("Go to page: " + i);
         var next_page = i;
         if(curr_page != next_page){
           curr_page = next_page
+
+          for(let j = 0; j < page_buttons.length; j++){
+            page_buttons[j].classList.remove('selected');
+          }
+
+          page_buttons[curr_page].classList.add('selected');
           PopulateScoreContainer(curr_page);
         }
       }
-
     }
 
     //Create Next Page Buttons
@@ -158,6 +178,12 @@ function PopulatePageButtons(){
       var next_page = Math.min(page_count - 1, curr_page + 1);
       if(curr_page != next_page){
         curr_page = next_page;
+
+        for(let j = 0; j < page_buttons.length; j++){
+          page_buttons[j].classList.remove('selected');
+        }
+
+        page_buttons[curr_page].classList.add('selected');
         PopulateScoreContainer(curr_page);
       }
     }
