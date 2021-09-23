@@ -1,9 +1,11 @@
 
+const CHARACTERS = ["Beginner Blake", "Classic Loadout Louis", "Onsite Procurement Patrice", "Ricky Dicky Random", "Operator Ori", "Soldier Of Fortune Franky", "Grumbly GI Grayson", "Cowweiner Calico", "Welldone Freemeat", "Zeke Zombie Hunter", "Flaccid Steak"];
 const MAPS = ["Default", "Winter Wasteland"];
 const EQUIPMENT_MODES = ["Limited", "Spawnlock"];
 const GAME_LENGTHS = ["5-Hold", "3-Hold", "Endless"];
 const HEALTH_MODES = ["Standard", "One-Hit"];
 
+var selection_character = {'selection' : CHARACTERS[0]}
 var selection_map = {'selection' : MAPS[0]};
 var selection_equipment = {'selection' : EQUIPMENT_MODES[0]};
 var selection_length = {'selection' : GAME_LENGTHS[0]};
@@ -14,11 +16,13 @@ var curr_page = 0;
 var score_container = {};
 var page_button_container = {};
 
+var character_list = {};
 var map_list = {};
 var equipment_list = {};
 var length_list = {};
 var health_list = {};
 
+var dropdown_character = {};
 var dropdown_map = {};
 var dropdown_equipment = {};
 var dropdown_length = {};
@@ -30,7 +34,8 @@ var search_bar = {};
 
 function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
-  url += "?map=" + selection_map.selection;
+  url += "?character=" + selection_character.selection;
+  url += "&map=" + selection_map.selection;
   url += "&health=" + selection_health.selection;
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
@@ -42,7 +47,8 @@ function GetScoreSelectionURL(page){
 
 function GetScoreSelectionCountURL(){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores/count";
-  url += "?map=" + selection_map.selection;
+  url += "?character=" + selection_character.selection;
+  url += "&map=" + selection_map.selection;
   url += "&health=" + selection_health.selection;
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
@@ -53,7 +59,8 @@ function GetScoreSelectionCountURL(){
 
 function GetScoreSearchURL(name){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores/search";
-  url += "?map=" + selection_map.selection;
+  url += "?character=" + selection_character.selection;
+  url += "&map=" + selection_map.selection;
   url += "&health=" + selection_health.selection;
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
@@ -411,11 +418,13 @@ document.addEventListener("DOMContentLoaded", function(){
   search_form = document.getElementById("search-form");
   search_bar = document.getElementById("search-bar");
 
+  character_list = document.getElementById("character-list");
   map_list = document.getElementById("map-list");
   equipment_list = document.getElementById("equipment-list");
   length_list = document.getElementById("length-list");
   health_list = document.getElementById("health-list");
 
+  dropdown_character = document.getElementById("dropdown-character");
   dropdown_map = document.getElementById("dropdown-map");
   dropdown_equipment = document.getElementById("dropdown-equipment");
   dropdown_length = document.getElementById("dropdown-length");
@@ -428,6 +437,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   SetupSearchButtons();
 
+  PopulateButtonList(character_list, dropdown_character, CHARACTERS, selection_character, "button-character-");
   PopulateButtonList(map_list, dropdown_map, MAPS, selection_map, "button-map-");
   PopulateButtonList(equipment_list, dropdown_equipment, EQUIPMENT_MODES, selection_equipment, "button-equipment-");
   PopulateButtonList(length_list, dropdown_length, GAME_LENGTHS, selection_length, "button-length-");
