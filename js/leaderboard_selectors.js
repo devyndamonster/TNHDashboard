@@ -25,6 +25,8 @@ var dropdown_length = {};
 var dropdown_health = {};
 
 var page_buttons = [];
+var search_form = {};
+var search_bar = {};
 
 function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
@@ -46,6 +48,83 @@ function GetScoreSelectionCountURL(){
   url += "&length=" + selection_length.selection;
 
   return url;
+}
+
+
+function GetScoreSearchURL(name){
+  var url = "https://tnh-dashboard.azure-api.net/v1/api/scores/search";
+  url += "?map=" + selection_map.selection;
+  url += "&health=" + selection_health.selection;
+  url += "&equipment=" + selection_equipment.selection;
+  url += "&length=" + selection_length.selection;
+  url += "&name=" + name;
+
+  return url;
+}
+
+
+function SetupSearchButtons(){
+  search_form.onsubmit = function(){
+    console.log(search_bar.value);
+    SearchForPlayer(search_bar.value);
+    return false;
+  }
+}
+
+function SearchForPlayer(name){
+  var url = GetScoreSearchURL(name);
+
+  $.get(url, function(data, status){
+    console.log(data);
+    
+    score_container.innerHTML = "";
+
+    if(data.length > 0){
+      const button = document.createElement("button");
+      button.classList.add("btn");
+      button.classList.add("w-100");
+      button.classList.add("score-list-button");
+      score_container.appendChild(button);
+      button.innerHTML = "";
+
+      button.innerHTML += "<a class=\"score-name\">" + data[0].name + "</a>";
+        button.innerHTML += "<a class=\"score-val\">" + data[0].score + "</a>";
+
+        button.onclick = function(){
+          console.log(JSON.parse(data[0].holdActions));
+          console.log(JSON.parse(data[0].holdStats));
+          PopulateMatchSummary(JSON.parse(data[0].holdActions), JSON.parse(data[0].holdStats));
+          DrawPlayerPath(JSON.parse(data[0].holdActions));
+        };
+    }
+
+    else{
+      const button = document.createElement("button");
+      button.classList.add("btn");
+      button.classList.add("w-100");
+      button.classList.add("score-list-button");
+      score_container.appendChild(button);
+
+      button.innerHTML = "";
+
+      button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
+      button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
+    }
+
+    for(let j = 0; j < 9; j++){
+      const button = document.createElement("button");
+      button.classList.add("btn");
+      button.classList.add("w-100");
+      button.classList.add("score-list-button");
+      score_container.appendChild(button);
+
+      button.innerHTML = "";
+
+      button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
+      button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
+    }
+    
+  });
 }
 
 
@@ -82,9 +161,6 @@ function PopulateScoreContainer(page){
         button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
         button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
       }
-      
-
-     
     }
   });
 }
@@ -206,6 +282,17 @@ function DrawPlayerPath(holdEvents){
   map_canvas.draw_steps.push(map_canvas.DrawAllSupply);
 
   var previousPoint = null;
+  var holdList = [];
+  var supplyList = [];
+
+  if(selection_map.selection == MAPS[0]){
+    holdList = ObjectiveListDefault;
+    supplyList = SupplyListDefault;
+  }
+  else if(selection_map.selection == MAPS[1]){
+    holdList = ObjectiveListWinter;
+    supplyList = SupplyListWinter;
+  }
 
   for(let i = 0; i < holdEvents.length; i++){
     for(let j = 0; j < holdEvents[i].length; j++){
@@ -217,7 +304,7 @@ function DrawPlayerPath(holdEvents){
           event = event.replace("Supply ", "");
           var index = parseInt(event);
 
-          previousPoint = SupplyListDefault[index];
+          previousPoint = supplyList[index];
           continue;
         }
       }
@@ -229,14 +316,14 @@ function DrawPlayerPath(holdEvents){
           var index = parseInt(event);
 
           var start = Object.assign({}, previousPoint);
-          var end = Object.assign({}, SupplyListDefault[index]);
+          var end = Object.assign({}, supplyList[index]);
           console.log("Drawing line (start to end)");
           console.log(start);
           console.log(end);
 
           map_canvas.draw_steps.push(DrawWrapper(start, end));
 
-          previousPoint = SupplyListDefault[index];
+          previousPoint = supplyList[index];
           continue;
         }
 
@@ -245,20 +332,21 @@ function DrawPlayerPath(holdEvents){
           var index = parseInt(event);
 
           var start = Object.assign({}, previousPoint);
-          var end = Object.assign({}, ObjectiveListDefault[index]);
+          var end = Object.assign({}, holdList[index]);
           console.log("Drawing line (start to end)");
           console.log(start);
           console.log(end);
 
           map_canvas.draw_steps.push(DrawWrapper(start, end));
 
-          previousPoint = ObjectiveListDefault[index];
+          previousPoint = holdList[index];
           continue;
         }
       }
     }
   }
-  map_canvas.Refresh("TNH_Map.png");
+
+  map_canvas.Refresh(selection_map.selection);
 }
 
 function PopulateMatchSummary(holdEvents, holdStats){
@@ -302,6 +390,11 @@ function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection
       dropdown_text.innerHTML = option_list[i];
       score_container.innerHTML = "<h3>Loading...</h3>";
   
+      map_canvas.draw_steps.length = 0;
+      map_canvas.draw_steps.push(map_canvas.DrawAllHolds);
+      map_canvas.draw_steps.push(map_canvas.DrawAllSupply);
+      map_canvas.Refresh(selection_map.selection);
+
       curr_page = 0;
       PopulateScoreContainer(curr_page);
       PopulatePageButtons();
@@ -315,6 +408,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
   score_container = document.getElementById("score-list-container");
   page_button_container = document.getElementById("page-button-list");
+  search_form = document.getElementById("search-form");
+  search_bar = document.getElementById("search-bar");
 
   map_list = document.getElementById("map-list");
   equipment_list = document.getElementById("equipment-list");
@@ -330,6 +425,8 @@ document.addEventListener("DOMContentLoaded", function(){
   dropdown_equipment.innerHTML = EQUIPMENT_MODES[0];
   dropdown_length.innerHTML = GAME_LENGTHS[0];
   dropdown_health.innerHTML = HEALTH_MODES[0];
+
+  SetupSearchButtons();
 
   PopulateButtonList(map_list, dropdown_map, MAPS, selection_map, "button-map-");
   PopulateButtonList(equipment_list, dropdown_equipment, EQUIPMENT_MODES, selection_equipment, "button-equipment-");
