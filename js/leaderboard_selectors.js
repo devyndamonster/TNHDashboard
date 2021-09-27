@@ -1,6 +1,6 @@
 
 const CHARACTERS = ["Beginner Blake", "Classic Loadout Louis", "Onsite Procurement Patrice", "Ricky Dicky Random", "Operator Ori", "Soldier Of Fortune Franky", "Grumbly GI Grayson", "Cowweiner Calico", "Welldone Freemeat", "Zeke Zombie Hunter", "Flaccid Steak"];
-const MAPS = ["Default", "Winter Wasteland"];
+const MAPS = ["Classic", "NorthestDakota"];
 const EQUIPMENT_MODES = ["Limited", "Spawnlock"];
 const GAME_LENGTHS = ["5-Hold", "3-Hold", "Endless"];
 const HEALTH_MODES = ["Standard", "One-Hit"];
@@ -402,6 +402,8 @@ function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection
       map_canvas.draw_steps.push(map_canvas.DrawAllSupply);
       map_canvas.Refresh(selection_map.selection);
 
+      document.getElementById("map-header").innerHTML = selection_map.selection;
+
       curr_page = 0;
       PopulateScoreContainer(curr_page);
       PopulatePageButtons();
@@ -434,6 +436,8 @@ document.addEventListener("DOMContentLoaded", function(){
   dropdown_equipment.innerHTML = EQUIPMENT_MODES[0];
   dropdown_length.innerHTML = GAME_LENGTHS[0];
   dropdown_health.innerHTML = HEALTH_MODES[0];
+
+  document.getElementById("map-header").innerHTML = selection_map.selection;
 
   SetupSearchButtons();
 
