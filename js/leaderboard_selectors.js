@@ -289,17 +289,10 @@ function DrawPlayerPath(holdEvents){
   map_canvas.draw_steps.push(map_canvas.DrawAllSupply);
 
   var previousPoint = null;
-  var holdList = [];
-  var supplyList = [];
+  var holdList = map_canvas.map_data.holdPointLocations;
+  var supplyList = map_canvas.map_data.supplyPointLocations;
 
-  if(selection_map.selection == MAPS[0]){
-    holdList = ObjectiveListDefault;
-    supplyList = SupplyListDefault;
-  }
-  else if(selection_map.selection == MAPS[1]){
-    holdList = ObjectiveListWinter;
-    supplyList = SupplyListWinter;
-  }
+  
 
   for(let i = 0; i < holdEvents.length; i++){
     for(let j = 0; j < holdEvents[i].length; j++){

@@ -1,114 +1,39 @@
 
-
+function GetMapDataURL(){
+    var url = "https://tnh-dashboard.azure-api.net/v1/api/maps";
+    url += "?name=" + selection_map.selection;
+  
+    return url;
+  }
 
 function Objective(pos_x, pos_y, radius, col_r, col_g, col_b){
     this.pos_x = pos_x;
     this.pos_y = pos_y;
 };
 
-const ObjectiveListDefault = [
-    new Objective(90, 130),
-    new Objective(217, 63),
-    new Objective(270, 180),
-    new Objective(218, 205),
-    new Objective(491, 132),
-    new Objective(370, 188),
-    new Objective(521, 376),
-    new Objective(453, 373),
-    new Objective(351, 394),
-    new Objective(239, 367),
-    new Objective(300, 326),
-    new Objective(160, 468),
-    new Objective(100, 307)
-];
 
-const SupplyListDefault = [
-    new Objective(138, 254),
-    new Objective(67, 345),
-    new Objective(117, 427),
-    new Objective(157, 538),
-    new Objective(300, 508),
-    new Objective(178, 296),
-    new Objective(432, 530),
-    new Objective(543, 466),
-    new Objective(492, 287),
-    new Objective(461, 235),
-    new Objective(501, 73),
-    new Objective(188, 121),
-    new Objective(350, 22),
-    new Objective(360, 296)
-];
+const MapSettingsClassic = {
+    padding_x_left: 75,
+    padding_x_right: 75,
+    padding_z_top: 40,
+    padding_z_bot: 20,
+    offset_x: -5,
+    offset_z: -20,
+    rotation: 180,
+    flip_x: true
+};
 
-const ObjectiveListWinter = [
-    new Objective(87, 17),
-    new Objective(76, 195),
-    new Objective(112, 129),
-    new Objective(155, 188),
-    new Objective(237, 186),
-    new Objective(246, 111),
-    new Objective(240, 21),
-    new Objective(307, 30),
-    new Objective(409, 37),
-    new Objective(484, 19),
-    new Objective(548, 55),
-    new Objective(455, 66),
-    new Objective(483, 148),
-    new Objective(535, 206),
-    new Objective(481, 192),
-    new Objective(426, 214),
-    new Objective(397, 79),
-    new Objective(359, 146),
-    new Objective(527, 288),
-    new Objective(389, 313),
-    new Objective(558, 389),
-    new Objective(493, 445),
-    new Objective(560, 553),
-    new Objective(526, 495),
-    new Objective(451, 477),
-    new Objective(376, 448),
-    new Objective(366, 541),
-    new Objective(277, 407),
-    new Objective(259, 539),
-    new Objective(98, 472),
-    new Objective(161, 362),
-    new Objective(164, 539)
-];
+const MapSettingsNorthestDakota = {
+    padding_x_left: 40,
+    padding_x_right: 40,
+    padding_z_top: 40,
+    padding_z_bot: 0,
+    offset_x: -5,
+    offset_z: -20,
+    rotation: 180,
+    flip_x: true
+};
 
-const SupplyListWinter = [
-    new Objective(35, 253),
-    new Objective(84, 267),
-    new Objective(105, 206),
-    new Objective(44, 186),
-    new Objective(41, 145),
-    new Objective(50, 95),
-    new Objective(201, 180),
-    new Objective(192, 61),
-    new Objective(299, 96),
-    new Objective(378, 14),
-    new Objective(373, 83),
-    new Objective(428, 94),
-    new Objective(429, 136),
-    new Objective(477, 40),
-    new Objective(531, 28),
-    new Objective(497, 98),
-    new Objective(537, 141),
-    new Objective(576, 181),
-    new Objective(493, 264),
-    new Objective(438, 184),
-    new Objective(461, 288),
-    new Objective(570, 357),
-    new Objective(516, 396),
-    new Objective(571, 481),
-    new Objective(466, 523),
-    new Objective(428, 429),
-    new Objective(332, 411),
-    new Objective(242, 489),
-    new Objective(118, 532),
-    new Objective(45, 547),
-    new Objective(97, 492),
-    new Objective(155, 447),
-    new Objective(83, 363)
-];
 
 function MapCanvas(canvas_element){
 
@@ -118,7 +43,18 @@ function MapCanvas(canvas_element){
     this.draw_steps = [];
     this.icon_radius = 10;
     this.map = "";
-    
+    this.map_data = {};
+
+    this.map_height = 571;
+    this.map_width = 622;
+
+    this.center_x = 0;
+    this.center_z = 0;
+    this.max_x = 0;
+    this.max_z = 0;
+    this.min_x = 0;
+    this.min_z = 0;
+
     this.Refresh = function(map){
         self.ctx.clearRect(0, 0, self.canvas_element.width, self.canvas_element.height);
         self.ctx.imageSmoothingEnabled = false;
@@ -129,19 +65,29 @@ function MapCanvas(canvas_element){
     
         // Make sure the image is loaded first otherwise nothing will draw.
         background.onload = function(){
-            self.ctx.drawImage(background,0,0, 622, 571);
 
-            for(let i = 0; i < self.draw_steps.length; i++){
-                console.log("Exectuing draw step " + i);
-                self.draw_steps[i]();
-            }
+            //Now that the background is loaded, we can get the map data
+            var url = GetMapDataURL();
+            $.get(url, function(data, status){
+
+                //Save the map data
+                data[0].holdPointLocations = JSON.parse(data[0].holdPointLocations);
+                data[0].supplyPointLocations = JSON.parse(data[0].supplyPointLocations);
+                self.map_data = data[0];
+
+                self.FitMapData(self.map_data, self.GetMapSettings(map));
+
+                //Now draw everything
+                self.ctx.drawImage(background,0,0, self.map_width, self.map_height);
+                for(let i = 0; i < self.draw_steps.length; i++){
+                    console.log("Exectuing draw step " + i);
+                    self.draw_steps[i]();
+                }
+            });
         }
     };
 
     this.GetMapPath = function(map){
-
-        console.log("MAP!!! " + map);
-
         if(map == MAPS[0]){
             return "TNH_Map.png";
         }
@@ -150,21 +96,80 @@ function MapCanvas(canvas_element){
         }
     }
 
+    this.GetMapSettings = function(map){
+        if(map == MAPS[0]){
+            return MapSettingsClassic;
+        }
+        else if(map == MAPS[1]){
+            return MapSettingsNorthestDakota;
+        }
+    }
+
+
+    this.FitMapData = function(map_data, map_settings){
+
+        //Get the center position of all points in our data
+        center = get_map_center(map_data);
+
+        //Now we want to rotate all the map data by the selected settings
+        map_data.holdPointLocations = map_data.holdPointLocations.map((point) => {
+            var rotated = rotate(center.x, center.z, point.x, point.z, map_settings.rotation);
+            point.x = rotated[0];
+            point.z = rotated[1];
+            return point;
+        });
+
+        map_data.supplyPointLocations = map_data.supplyPointLocations.map((point) => {
+            var rotated = rotate(center.x, center.z, point.x, point.z, map_settings.rotation);
+            point.x = rotated[0];
+            point.z = rotated[1];
+            return point;
+        });
+
+        //Now if the settings want us to flip we flip the points
+        if(map_settings.flip_x){
+            map_data.holdPointLocations = map_data.holdPointLocations.map((point) => {
+                point.x -= center.x;
+                point.x = -point.x;
+                point.x += center.x;
+                return point;
+            });
+
+            map_data.supplyPointLocations = map_data.supplyPointLocations.map((point) => {
+                point.x -= center.x;
+                point.x = -point.x;
+                point.x += center.x;
+                return point;
+            });
+        }
+
+        //Next, get the min and max values of this transformed data
+        const max_vals = get_map_max_vals(map_data);
+        const min_vals = get_map_min_vals(map_data);
+
+        //Now scale the map data
+        map_data.holdPointLocations = map_data.holdPointLocations.map((point) => {
+            point.x = scale(point.x, min_vals.x, max_vals.x, map_settings.padding_x_left, self.map_width - map_settings.padding_x_right) + map_settings.offset_x;
+            point.z = scale(point.z, min_vals.z, max_vals.z, map_settings.padding_z_top, self.map_height - map_settings.padding_z_bot) + map_settings.offset_z;
+            return point;
+        });
+        map_data.supplyPointLocations = map_data.supplyPointLocations.map((point) => {
+            point.x = scale(point.x, min_vals.x, max_vals.x, map_settings.padding_x_left, self.map_width - map_settings.padding_x_right) + map_settings.offset_x;
+            point.z = scale(point.z, min_vals.z, max_vals.z, map_settings.padding_z_top, self.map_height - map_settings.padding_z_bot) + map_settings.offset_z;
+            return point;
+        });
+
+    }
+
+
     this.DrawAllHolds = function(){
 
-        var objList = {};
-
-        if(self.map == MAPS[0]){
-            objList = ObjectiveListDefault;
-        }
-        else if(self.map == MAPS[1]){
-            objList = ObjectiveListWinter;
-        }
+        var objList = self.map_data.holdPointLocations;
 
         for(let i = 0; i < objList.length; i++){
             var obj = objList[i];
             self.ctx.beginPath();
-            self.ctx.arc(obj.pos_x, obj.pos_y, self.icon_radius, 0, 2 * Math.PI);
+            self.ctx.arc(obj.x, obj.z, self.icon_radius, 0, 2 * Math.PI);
             self.ctx.fillStyle = "rgba(" + 255 + "," + 177 + "," + 177 + ",1)";
             self.ctx.fill();
 
@@ -175,25 +180,18 @@ function MapCanvas(canvas_element){
             self.ctx.fillStyle = "rgba(" + 0 + "," + 0 + "," + 0 + ",1)";
             self.ctx.font = "13px Arial";
             self.ctx.textAlign = "center";
-            self.ctx.fillText(i, obj.pos_x, obj.pos_y + 5);
+            self.ctx.fillText(i, obj.x, obj.z + 5);
         }
     };
 
     this.DrawAllSupply = function(){
 
-        var objList = {};
-
-        if(self.map == MAPS[0]){
-            objList = SupplyListDefault;
-        }
-        else if(self.map == MAPS[1]){
-            objList = SupplyListWinter;
-        }
+        var objList = self.map_data.supplyPointLocations;
 
         for(let i = 0; i < objList.length; i++){
             var obj = objList[i];
             self.ctx.beginPath();
-            self.ctx.arc(obj.pos_x, obj.pos_y, self.icon_radius, 0, 2 * Math.PI);
+            self.ctx.arc(obj.x, obj.z, self.icon_radius, 0, 2 * Math.PI);
             self.ctx.fillStyle = "rgba(" + 145 + "," + 255 + "," + 102 + ",1)";
             self.ctx.fill();
 
@@ -204,7 +202,7 @@ function MapCanvas(canvas_element){
             self.ctx.fillStyle = "rgba(" + 0 + "," + 0 + "," + 0 + ",1)";
             self.ctx.font = "13px Arial";
             self.ctx.textAlign = "center";
-            self.ctx.fillText(i, obj.pos_x, obj.pos_y + 5);
+            self.ctx.fillText(i, obj.x, obj.z + 5);
         }
     };
 
@@ -212,26 +210,26 @@ function MapCanvas(canvas_element){
 
         //This cute lil bit of code is based on this stackoverflow page: https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
         var headlen = 10;
-        var dx = end.pos_x - start.pos_x;
-        var dy = end.pos_y - start.pos_y;
-        var angle = Math.atan2(dy, dx);
+        var dx = end.x - start.x;
+        var dz = end.z - start.z;
+        var angle = Math.atan2(dz, dx);
 
-        console.log("Drawing from (" + start.pos_x + "," + start.pos_y + ") to (" + end.pos_x + "," + end.pos_y + ")");
+        console.log("Drawing from (" + start.x + "," + start.z + ") to (" + end.x + "," + end.z + ")");
 
         self.ctx.strokeStyle = 'rgb(150, 75, 75)';
         self.ctx.lineWidth = 2;
 
         self.ctx.beginPath();
-        self.ctx.moveTo(start.pos_x, start.pos_y);
-        self.ctx.lineTo(end.pos_x, end.pos_y);
+        self.ctx.moveTo(start.x, start.z);
+        self.ctx.lineTo(end.x, end.z);
         self.ctx.stroke();
 
-        self.ctx.moveTo(end.pos_x, end.pos_y);
-        self.ctx.lineTo(end.pos_x - headlen * Math.cos(angle - Math.PI / 6), end.pos_y - headlen * Math.sin(angle - Math.PI / 6));
+        self.ctx.moveTo(end.x, end.z);
+        self.ctx.lineTo(end.x - headlen * Math.cos(angle - Math.PI / 6), end.z - headlen * Math.sin(angle - Math.PI / 6));
         self.ctx.stroke();
 
-        self.ctx.moveTo(end.pos_x, end.pos_y);
-        self.ctx.lineTo(end.pos_x - headlen * Math.cos(angle + Math.PI / 6), end.pos_y - headlen * Math.sin(angle + Math.PI / 6));
+        self.ctx.moveTo(end.x, end.z);
+        self.ctx.lineTo(end.x - headlen * Math.cos(angle + Math.PI / 6), end.z - headlen * Math.sin(angle + Math.PI / 6));
         self.ctx.stroke();
     }
 
