@@ -70,10 +70,12 @@ function MapCanvas(canvas_element){
             var url = GetMapDataURL();
             $.get(url, function(data, status){
 
+                console.log(data);
+
                 //Save the map data
-                data[0].holdPointLocations = JSON.parse(data[0].holdPointLocations);
-                data[0].supplyPointLocations = JSON.parse(data[0].supplyPointLocations);
-                self.map_data = data[0];
+                data.holdPointLocations = JSON.parse(data.holdPointLocations);
+                data.supplyPointLocations = JSON.parse(data.supplyPointLocations);
+                self.map_data = data;
 
                 self.FitMapData(self.map_data, self.GetMapSettings(map));
 
