@@ -65,6 +65,8 @@ function GetScoreSearchURL(name){
   url += "&equipment=" + selection_equipment.selection;
   url += "&length=" + selection_length.selection;
   url += "&name=" + name;
+  url += "&num_before=2";
+  url += "&num_after=2";
 
   return url;
 }
@@ -73,104 +75,68 @@ function GetScoreSearchURL(name){
 function SetupSearchButtons(){
   search_form.onsubmit = function(){
     console.log(search_bar.value);
-    SearchForPlayer(search_bar.value);
+
+    if(search_bar.value == ""){
+      curr_page = 0;
+      PopulateScoreContainer(GetScoreSelectionURL(curr_page));
+    }
+    else{
+      SearchForPlayer(search_bar.value);
+    }
+
     return false;
   }
 }
 
 function SearchForPlayer(name){
-  var url = GetScoreSearchURL(name);
-
-  $.get(url, function(data, status){
-    console.log(data);
-    
-    score_container.innerHTML = "";
-
-    if(data.length > 0){
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.classList.add("w-100");
-      button.classList.add("score-list-button");
-      score_container.appendChild(button);
-      button.innerHTML = "";
-
-      button.innerHTML += "<a class=\"score-name\">" + data[0].name + "</a>";
-        button.innerHTML += "<a class=\"score-val\">" + data[0].score + "</a>";
-
-        button.onclick = function(){
-          console.log(JSON.parse(data[0].holdActions));
-          console.log(JSON.parse(data[0].holdStats));
-          PopulateMatchSummary(JSON.parse(data[0].holdActions), JSON.parse(data[0].holdStats));
-          DrawPlayerPath(JSON.parse(data[0].holdActions));
-        };
-    }
-
-    else{
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.classList.add("w-100");
-      button.classList.add("score-list-button");
-      score_container.appendChild(button);
-
-      button.innerHTML = "";
-
-      button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
-      button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
-    }
-
-    for(let j = 0; j < 9; j++){
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.classList.add("w-100");
-      button.classList.add("score-list-button");
-      score_container.appendChild(button);
-
-      button.innerHTML = "";
-
-      button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
-      button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
-    }
-    
-  });
+  PopulateScoreContainer(GetScoreSearchURL(name));
 }
 
-
-function PopulateScoreContainer(page){
-  var url = GetScoreSelectionURL(page);
-
-  $.get(url, function(data, status){
-    console.log(data);
+function PopulateScoreContainer(url){
+  
+  $.ajax({
+    url: url,
+    type: 'GET',
+    success: function(data){
+      console.log(data);
     
-    score_container.innerHTML = "";
-
-    for(let j = 0; j < 10; j++){
-
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.classList.add("w-100");
-      button.classList.add("score-list-button");
-      score_container.appendChild(button);
-
-      button.innerHTML = "";
-
-      if(data.length > j){
-        button.innerHTML += "<a class=\"score-name\">" + data[j].name + "</a>";
-        button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
-
-        button.onclick = function(){
-          console.log(JSON.parse(data[j].holdActions));
-          console.log(JSON.parse(data[j].holdStats));
-          PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
-          DrawPlayerPath(JSON.parse(data[j].holdActions));
-        };
+      score_container.innerHTML = "";
+  
+      for(let j = 0; j < 10; j++){
+  
+        const button = document.createElement("button");
+        button.classList.add("btn");
+        button.classList.add("w-100");
+        button.classList.add("score-list-button");
+        score_container.appendChild(button);
+  
+        button.innerHTML = "";
+  
+        if(data.length > j){
+          button.innerHTML += "<a class=\"score-rank\">" + (data[j].rank + 1) + ". " + "</a>";
+          button.innerHTML += "<a class=\"score-name\">"  + data[j].name + "</a>";
+          button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
+  
+          button.onclick = function(){
+            console.log(JSON.parse(data[j].holdActions));
+            console.log(JSON.parse(data[j].holdStats));
+            PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
+            DrawPlayerPath(JSON.parse(data[j].holdActions));
+          };
+        }
+        else{
+          button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
+          button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
+        }
       }
-      else{
-        button.innerHTML += "<a class=\"score-name\">" + "--------" + "</a>";
-        button.innerHTML += "<a class=\"score-val\">" + "--------" + "</a>";
-      }
+    },
+    error: function(err){
+      console.log("Nothing found!");
     }
-  });
+
+  })
 }
+
 
 
 function PopulatePageButtons(){
@@ -206,7 +172,7 @@ function PopulatePageButtons(){
         }
 
         page_buttons[curr_page].classList.add('selected');
-        PopulateScoreContainer(curr_page);
+        PopulateScoreContainer(GetScoreSelectionURL(curr_page));
       }
     }
 
@@ -239,7 +205,7 @@ function PopulatePageButtons(){
           }
 
           page_buttons[curr_page].classList.add('selected');
-          PopulateScoreContainer(curr_page);
+          PopulateScoreContainer(GetScoreSelectionURL(curr_page));
         }
       }
     }
@@ -267,7 +233,7 @@ function PopulatePageButtons(){
         }
 
         page_buttons[curr_page].classList.add('selected');
-        PopulateScoreContainer(curr_page);
+        PopulateScoreContainer(GetScoreSelectionURL(curr_page));
       }
     }
 
@@ -398,7 +364,7 @@ function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection
       document.getElementById("map-header").innerHTML = selection_map.selection;
 
       curr_page = 0;
-      PopulateScoreContainer(curr_page);
+      PopulateScoreContainer(GetScoreSelectionURL(curr_page));
       PopulatePageButtons();
     };
   }
@@ -440,6 +406,6 @@ document.addEventListener("DOMContentLoaded", function(){
   PopulateButtonList(length_list, dropdown_length, GAME_LENGTHS, selection_length, "button-length-");
   PopulateButtonList(health_list, dropdown_health, HEALTH_MODES, selection_health, "button-health-");
 
-  PopulateScoreContainer(curr_page);
+  PopulateScoreContainer(GetScoreSelectionURL(curr_page));
   PopulatePageButtons();
 });

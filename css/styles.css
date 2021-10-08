@@ -124,6 +124,20 @@ body{
   text-decoration: none;
 }
 
+.score-rank{
+  float:left;
+  color: inherit;
+  text-decoration: none;
+  min-width: 30px;
+}
+
+.score-rank:hover{
+  color: inherit;
+  text-decoration: none;
+}
+
+
+
 .score-container{
   display: flex; 
   flex-direction: column;
