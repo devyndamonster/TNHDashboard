@@ -1,9 +1,11 @@
 
-const CHARACTERS = ["Beginner Blake", "Classic Loadout Louis", "Onsite Procurement Patrice", "Ricky Dicky Random", "Operator Ori", "Soldier Of Fortune Franky", "Grumbly GI Grayson", "Cowweiner Calico", "Welldone Freemeat", "Zeke Zombie Hunter", "Flaccid Steak"];
-const MAPS = ["Classic", "NorthestDakota"];
+var CHARACTERS = ["Beginner Blake", "Classic Loadout Louis", "Onsite Procurement Patrice", "Ricky Dicky Random", "Operator Ori", "Soldier Of Fortune Franky", "Grumbly GI Grayson", "Cowweiner Calico", "Welldone Freemeat", "Zeke Zombie Hunter", "Flaccid Steak"];
+var MAPS = ["Classic", "NorthestDakota"];
+
 const EQUIPMENT_MODES = ["Limited", "Spawnlock"];
 const GAME_LENGTHS = ["5-Hold", "3-Hold", "Endless"];
 const HEALTH_MODES = ["Standard", "One-Hit"];
+
 
 var selection_character = {'selection' : CHARACTERS[0]}
 var selection_map = {'selection' : MAPS[0]};
@@ -31,6 +33,7 @@ var dropdown_health = {};
 var page_buttons = [];
 var search_form = {};
 var search_bar = {};
+
 
 function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
@@ -68,6 +71,11 @@ function GetScoreSearchURL(name){
   url += "&num_before=2";
   url += "&num_after=2";
 
+  return url;
+}
+
+function GetUserSelectionsURL(name){
+  var url = "https://tnh-dashboard.azure-api.net/v1/api/content";
   return url;
 }
 
@@ -371,6 +379,21 @@ function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection
 }
 
 
+function GetUserContentSelections(){
+  $.get(GetUserSelectionsURL(), function(data, status){
+
+    CHARACTERS.push(...data[0]);
+    MAPS.push(...data[1]);
+
+    console.log(CHARACTERS);
+
+    PopulateButtonList(character_list, dropdown_character, CHARACTERS, selection_character, "button-character-");
+    PopulateButtonList(map_list, dropdown_map, MAPS, selection_map, "button-map-");
+
+  });
+}
+
+
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -408,4 +431,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   PopulateScoreContainer(GetScoreSelectionURL(curr_page));
   PopulatePageButtons();
+
+  GetUserContentSelections();
+
 });

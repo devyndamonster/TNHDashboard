@@ -34,6 +34,17 @@ const MapSettingsNorthestDakota = {
     flip_x: true
 };
 
+const MapSettingsDefault = {
+    padding_x_left: 40,
+    padding_x_right: 40,
+    padding_z_top: 40,
+    padding_z_bot: 40,
+    offset_x: 0,
+    offset_z: 0,
+    rotation: 0,
+    flip_x: false
+};
+
 
 function MapCanvas(canvas_element){
 
@@ -96,6 +107,9 @@ function MapCanvas(canvas_element){
         else if(map == MAPS[1]){
             return "TNH_Winter_Map.png";
         }
+        else{
+            return "No_Map_Image.png";
+        }
     }
 
     this.GetMapSettings = function(map){
@@ -104,6 +118,9 @@ function MapCanvas(canvas_element){
         }
         else if(map == MAPS[1]){
             return MapSettingsNorthestDakota;
+        }
+        else{
+            return MapSettingsDefault;
         }
     }
 
