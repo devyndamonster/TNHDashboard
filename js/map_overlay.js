@@ -34,6 +34,17 @@ const MapSettingsNorthestDakota = {
     flip_x: true
 };
 
+const MapSettingsIslandCompound = {
+    padding_x_left: 40,
+    padding_x_right: 40,
+    padding_z_top: 40,
+    padding_z_bot: 40,
+    offset_x: 0,
+    offset_z: 0,
+    rotation: 230,
+    flip_x: false
+};
+
 const MapSettingsDefault = {
     padding_x_left: 40,
     padding_x_right: 40,
@@ -81,7 +92,7 @@ function MapCanvas(canvas_element){
             var url = GetMapDataURL();
             $.get(url, function(data, status){
 
-                console.log(data);
+                //console.log(data);
 
                 //Save the map data
                 data.holdPointLocations = JSON.parse(data.holdPointLocations);
@@ -93,7 +104,7 @@ function MapCanvas(canvas_element){
                 //Now draw everything
                 self.ctx.drawImage(background,0,0, self.map_width, self.map_height);
                 for(let i = 0; i < self.draw_steps.length; i++){
-                    console.log("Exectuing draw step " + i);
+                    //console.log("Exectuing draw step " + i);
                     self.draw_steps[i]();
                 }
             });
@@ -107,6 +118,9 @@ function MapCanvas(canvas_element){
         else if(map == MAPS[1]){
             return "TNH_Winter_Map.png";
         }
+        else if(map == "IslandCompound"){
+            return "Island_Compound_Map.png";
+        }
         else{
             return "No_Map_Image.png";
         }
@@ -118,6 +132,9 @@ function MapCanvas(canvas_element){
         }
         else if(map == MAPS[1]){
             return MapSettingsNorthestDakota;
+        }
+        else if(map == "IslandCompound"){
+            return MapSettingsIslandCompound;
         }
         else{
             return MapSettingsDefault;
@@ -228,15 +245,15 @@ function MapCanvas(canvas_element){
     this.DrawArrow = function(start, end){
 
         //This cute lil bit of code is based on this stackoverflow page: https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
-        var headlen = 10;
+        var headlen = 15;
         var dx = end.x - start.x;
         var dz = end.z - start.z;
         var angle = Math.atan2(dz, dx);
 
-        console.log("Drawing from (" + start.x + "," + start.z + ") to (" + end.x + "," + end.z + ")");
+        //console.log("Drawing from (" + start.x + "," + start.z + ") to (" + end.x + "," + end.z + ")");
 
-        self.ctx.strokeStyle = 'rgb(150, 75, 75)';
-        self.ctx.lineWidth = 2;
+        self.ctx.strokeStyle = 'rgb(219, 87, 61)';
+        self.ctx.lineWidth = 4;
 
         self.ctx.beginPath();
         self.ctx.moveTo(start.x, start.z);
@@ -284,3 +301,7 @@ document.addEventListener("DOMContentLoaded", function(){
         getMousePos(map_canvas.canvas_element, e)
     })
 });
+
+
+// animating https://stackoverflow.com/questions/23939588/how-to-animate-drawing-lines-on-canvas
+// Async https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function

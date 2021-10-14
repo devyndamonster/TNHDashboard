@@ -34,6 +34,8 @@ var page_buttons = [];
 var search_form = {};
 var search_bar = {};
 
+var hold_selection_container = {};
+
 
 function GetScoreSelectionURL(page){
   var url = "https://tnh-dashboard.azure-api.net/v1/api/scores";
@@ -126,10 +128,12 @@ function PopulateScoreContainer(url){
           button.innerHTML += "<a class=\"score-val\">" + data[j].score + "</a>";
   
           button.onclick = function(){
-            console.log(JSON.parse(data[j].holdActions));
-            console.log(JSON.parse(data[j].holdStats));
-            PopulateMatchSummary(JSON.parse(data[j].holdActions), JSON.parse(data[j].holdStats));
-            DrawPlayerPath(JSON.parse(data[j].holdActions));
+            var holdActions = JSON.parse(data[j].holdActions);
+            var holdStats = JSON.parse(data[j].holdStats);
+
+            PopulateMatchSummary(holdActions, holdStats);
+            PopulateHoldSelection(holdActions);
+            DrawPlayerPath(holdActions, 0, 1);
           };
         }
         else{
@@ -256,7 +260,9 @@ function DrawWrapper(start, end){
   return f;
 }
 
-function DrawPlayerPath(holdEvents){
+function DrawPlayerPath(holdEvents, startHold, endHold){
+
+  console.log('Started Making Path');
 
   map_canvas.draw_steps.length = 0;
   map_canvas.draw_steps.push(map_canvas.DrawAllHolds);
@@ -268,32 +274,70 @@ function DrawPlayerPath(holdEvents){
 
   
 
+  if(startHold > 0){
+    var prevHold = holdEvents[startHold - 1];
+    prevHold = prevHold[prevHold.length - 1];
+    prevHold = prevHold.replace("Entered Hold ", "");
+    var index = parseInt(prevHold);
+
+    previousPoint = holdList[index];
+
+    console.log("Previous Hold Selected: " + prevHold);
+  }
+
+  holdEvents = holdEvents.slice(startHold, endHold);
+
+
   for(let i = 0; i < holdEvents.length; i++){
     for(let j = 0; j < holdEvents[i].length; j++){
       var event = holdEvents[i][j];
 
+      //First, replace 'Spawned At' with generic starter
       if(event.startsWith("Spawned At")){
-        event = event.replace("Spawned At ", "");
+        event = event.replace("Spawned At ", "Entered ");
+        console.log("Replaced: " + event);
+      }
+
+      //If this is the first point in the path, we only track it as previous point
+      if(event.startsWith("Entered") && previousPoint == null){
+        
+        event = event.replace("Entered ", "");
+
         if(event.includes("Supply")){
           event = event.replace("Supply ", "");
           var index = parseInt(event);
-
           previousPoint = supplyList[index];
+
+          //console.log("First point: " + event);
+          //console.log(previousPoint);
+          continue;
+        }
+
+        if(event.includes("Hold")){
+          event = event.replace("Hold ", "");
+          var index = parseInt(event);
+          previousPoint = holdList[index];
+
+          //console.log("First point: " + event);
+          //console.log(previousPoint);
           continue;
         }
       }
 
-      if(event.startsWith("Entered")){
+      //If this was a later point, we go queue up draw steps
+      else if(event.startsWith("Entered")){
         event = event.replace("Entered ", "");
+
+        //If this is a supply point, draw from the supply list
         if(event.includes("Supply")){
           event = event.replace("Supply ", "");
           var index = parseInt(event);
 
           var start = Object.assign({}, previousPoint);
           var end = Object.assign({}, supplyList[index]);
-          console.log("Drawing line (start to end)");
-          console.log(start);
-          console.log(end);
+          //console.log("Drawing line (start to end)");
+          //console.log(start);
+          //console.log(end);
 
           map_canvas.draw_steps.push(DrawWrapper(start, end));
 
@@ -301,15 +345,16 @@ function DrawPlayerPath(holdEvents){
           continue;
         }
 
+        //If this is a hold point, draw from the hold list
         if(event.includes("Hold")){
           event = event.replace("Hold ", "");
           var index = parseInt(event);
 
           var start = Object.assign({}, previousPoint);
           var end = Object.assign({}, holdList[index]);
-          console.log("Drawing line (start to end)");
-          console.log(start);
-          console.log(end);
+          //console.log("Drawing line (start to end)");
+          //console.log(start);
+          //console.log(end);
 
           map_canvas.draw_steps.push(DrawWrapper(start, end));
 
@@ -349,6 +394,29 @@ function PopulateMatchSummary(holdEvents, holdStats){
   summary_container.innerHTML = summary_html;
 }
 
+
+function PopulateHoldSelection(holdEvents){
+
+  console.log("boom!");
+  hold_selection_container.innerHTML = "";
+
+  for(let i = 0; i < holdEvents.length; i++){
+    const button = document.createElement("button");
+    button.classList.add("tnh-button-style");
+    button.classList.add("hold-button");
+    button.textContent = "Hold " + (i+1);
+    hold_selection_container.appendChild(button);
+
+    button.onclick = function(){
+      DrawPlayerPath(holdEvents, i, i+1);
+    }
+
+  }
+  
+
+}
+
+
 function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection_object, id_prefix){
   dropdown_body.innerHTML = "";
   for(let i = 0; i < option_list.length; i++){
@@ -385,7 +453,7 @@ function GetUserContentSelections(){
     CHARACTERS.push(...data[0]);
     MAPS.push(...data[1]);
 
-    console.log(CHARACTERS);
+    //console.log(CHARACTERS);
 
     PopulateButtonList(character_list, dropdown_character, CHARACTERS, selection_character, "button-character-");
     PopulateButtonList(map_list, dropdown_map, MAPS, selection_map, "button-map-");
@@ -401,6 +469,7 @@ document.addEventListener("DOMContentLoaded", function(){
   page_button_container = document.getElementById("page-button-list");
   search_form = document.getElementById("search-form");
   search_bar = document.getElementById("search-bar");
+  hold_selection_container = document.getElementById("hold-selection-flex")
 
   character_list = document.getElementById("character-list");
   map_list = document.getElementById("map-list");

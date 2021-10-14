@@ -11,7 +11,7 @@ function scale (number, inMin, inMax, outMin, outMax) {
 //last param is angle
 function rotate(cx, cy, x, y, angle) {
 
-  console.log("rotating point: " + x + "," + y)
+  //console.log("rotating point: " + x + "," + y)
   var radians = (Math.PI / 180) * angle,
       cos = Math.cos(radians),
       sin = Math.sin(radians),

@@ -7,11 +7,12 @@
 
     <title>TNH Dashboard</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/test_styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/utilities.js"></script>
+    <script src="js/map_overlay.js"></script>
     <script src="js/leaderboard_selectors.js"></script>
 
   </head>
@@ -25,15 +26,39 @@
       </nav>
     </header>
   
-    <div class="container-xxl">
+    <div class="container-xl">
+      
       <div class="row">
-        <div class="col-xxl-12 p-2">
-          <div class="body-container p-3">
+    
+        <div class="col-xl-4 p-2" style="display: flex; flex-direction: column;">
+
+          <div class="body-container p-3" style="height: auto; margin-bottom: 20px;">
 
             <h3 class="text-center">Leaderboard Selection</h3>
             <hr>
 
             <div id="leaderboard-option-container">
+
+              <div class="leaderboard-option-element">
+                <div class="leaderboard-element-padding">
+  
+                  <div class="leaderboard-label-container">
+                    <label class="leaderboard-option-label">Character</label>
+                  </div>
+                  
+                  <div class="leaderboard-button-container">
+                    <div class="dropdown leaderboard-option-button w-100">
+                      <button class="btn btn-secondary dropdown-toggle w-100 tnh-button-style" type="button" id="dropdown-character" data-bs-toggle="dropdown" aria-expanded="false">
+                        Beginner Blake
+                      </button>
+                      <ul class="dropdown-menu" id="character-list" aria-labelledby="dropdown-character">
+  
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
 
               <div class="leaderboard-option-element">
                 <div class="leaderboard-element-padding">
@@ -120,72 +145,71 @@
             </div>
 
           </div>
+
+
+          <div class="body-container p-3 score-container">
+
+            <h3 class="text-center body-element-header">High Scores</h3>
+            <hr>
+
+            <form class="d-flex" id="search-form">
+              <input class="form-control me-2" id="search-bar" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn tnh-button-style">Search</button>
+            </form>
+            <hr>
+  
+            <div id="score-list-container">
+
+              <h3>Loading...</h3>
+              
+            </div>
+  
+            <hr>
+  
+            <nav aria-label="Page navigation example" id="score-page-button-container">
+              <ul class="pagination justify-content-center" id="page-button-list">
+
+                <li class="page-item">
+                  <button class="page-link tnh-button-style">&laquo;</button>
+                </li>
+                
+                <li class="page-item"><button class="page-link tnh-button-style">1</button></li>
+                <li class="page-item"><button class="page-link tnh-button-style">2</button></li>
+                <li class="page-item"><button class="page-link tnh-button-style">3</button></li>
+
+                <li class="page-item">
+                  <button class="page-link tnh-button-style">&raquo;</button>
+                </li>
+
+              </ul>
+            </nav>
+
+          </div>
         </div>
-      </div>
+        <div class="col-xl-8 p-2">
+          <div class="body-container p-3">
+            <h3 class="text-center body-element-header" id="map-header">Default Map</h3>
+            <hr>
 
-      <div class="row">
-        <div class="col-xxl-12">
-          <div class="row">
-            <div class="col-xxl-4 p-2">
-              <div class="body-container p-3 score-container">
-
-                <h3 class="text-center body-element-header">High Scores</h3>
-                <hr>
-
-                <form class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-secondary tnh-button-style" type="submit">Search</button>
-                </form>
-                <hr>
-      
-                <div id="score-list-container">
-                  <p>
-                  Etiam justo arcu, faucibus luctus justo at, iaculis feugiat quam. Integer vel diam in leo ornare pharetra. Proin neque lectus, maximus at massa quis, ultricies egestas risus. Sed sit amet enim luctus, accumsan massa et, dictum velit. Nunc pellentesque quam eu condimentum sagittis. Vivamus lobortis mauris id gravida rutrum. Suspendisse cursus enim sed quam gravida, eu condimentum leo commodo. Curabitur id velit ac neque aliquam imperdiet. Nulla consectetur mi ac dolor feugiat aliquet id vel ex. Nunc pellentesque pulvinar pellentesque. Fusce mi nulla, consectetur sit amet erat vitae, blandit congue eros. Pellentesque condimentum lacus a nisl iaculis volutpat. Pellentesque imperdiet consequat mi, vitae consectetur dui ornare a. Nullam a cursus augue.
-                  </p>
-                </div>
-      
-                <hr>
-      
-                <nav aria-label="Page navigation example" id="score-page-button-container">
-                  <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-
-              </div>
+            <div class="map-container">
+              <canvas width="622" height="571" id="map-canvas"></canvas>
             </div>
-            <div class="col-xxl-8 p-2">
-              <div class="body-container p-3">
-                <h3 class="text-center body-element-header">Default Map</h3>
-                <hr>
-                <img src="TNH_Map.png" alt="Map" id="map-image">
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
         
       <div class="row">
-        <div class="col-xxl-12 p-2">
+        <div class="col-xl-12 p-2">
 
           <div class="body-container p-3">
             <h3 class="text-center body-element-header">Match Summary</h3>
             <hr>
-            <p>
-                Etiam justo arcu, faucibus luctus justo at, iaculis feugiat quam. Integer vel diam in leo ornare pharetra. Proin neque lectus, maximus at massa quis, ultricies egestas risus. Sed sit amet enim luctus, accumsan massa et, dictum velit. Nunc pellentesque quam eu condimentum sagittis. Vivamus lobortis mauris id gravida rutrum. Suspendisse cursus enim sed quam gravida, eu condimentum leo commodo. Curabitur id velit ac neque aliquam imperdiet. Nulla consectetur mi ac dolor feugiat aliquet id vel ex. Nunc pellentesque pulvinar pellentesque. Fusce mi nulla, consectetur sit amet erat vitae, blandit congue eros. Pellentesque condimentum lacus a nisl iaculis volutpat. Pellentesque imperdiet consequat mi, vitae consectetur dui ornare a. Nullam a cursus augue.
-            </p>
+            
+            <div id="summary-container">
+                <h5 class="p-2 text-center"> Select a High Score First </h5>
+            </div>
+
           </div>
           
         </div>

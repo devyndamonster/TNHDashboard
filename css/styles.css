@@ -21,6 +21,11 @@ body{
   color: white;
 }
 
+.dropdown-menu {         
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 
 .navbar{
   background-color: rgb(66, 100, 151);
@@ -44,26 +49,16 @@ body{
   font-size: 20px;
 }
 
-@media (min-width: 768px) {
-.leaderboard-option-element{
-  width: 50%;
-  float:left;
-  margin-bottom:10px;
-}
 
-}
-
-@media (max-width: 767px) {
 .leaderboard-option-element{
   width: 100%;
   float:left;
-  margin-bottom:10px;
+  margin-bottom:0px;
 }
 
-}
 
 .leaderboard-element-padding{
-  margin: 10px;
+  margin: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -156,6 +151,7 @@ body{
   background-color: #ffffff00;
   border-color: #ffffff00;
   font-size: 30px;
+  padding: 0px;
 }
 
 .score-list-button:hover {
@@ -210,6 +206,56 @@ body{
   background-color: rgba(255, 255, 255, 0.13);
   border-radius: 3px;
   padding: 5px 5px 5px 10px;
+}
+
+
+.hold-bar-container{
+  background-color: rgb(184, 184, 184); 
+  min-height: 40px; 
+  margin-bottom: 10px; 
+  display: flex;
+}
+
+.hold-bar{
+  width:40%;
+  background-color: rgb(37, 68, 109);
+}
+
+#hold-selection-flex{
+  background-color: rgba(165, 42, 42, 0); 
+  overflow:auto; 
+  overflow-y: hidden; 
+  display: flex; 
+  flex-direction: row; 
+  font-size: 30px;
+}
+
+.hold-button{
+  min-width: 100px; 
+  flex-grow: 1;
+}
+
+
+
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(168, 187, 191, 0.507);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
 }
 
 
