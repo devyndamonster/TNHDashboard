@@ -254,8 +254,8 @@ function PopulatePageButtons(){
 
 
 function DrawWrapper(start, end){
-  function f(){
-    map_canvas.DrawArrow(start, end);
+  async function f(cancel_token){
+    await map_canvas.DrawArrow(start, end, cancel_token);
   }
   return f;
 }

@@ -216,7 +216,7 @@ body{
   display: flex;
 }
 
-.hold-bar{
+#hold-bar{
   width:40%;
   background-color: rgb(37, 68, 109);
 }
