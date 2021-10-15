@@ -35,14 +35,14 @@ const MapSettingsNorthestDakota = {
 };
 
 const MapSettingsIslandCompound = {
-    padding_x_left: 40,
-    padding_x_right: 40,
-    padding_z_top: 40,
-    padding_z_bot: 40,
+    padding_x_left: 60,
+    padding_x_right: 100,
+    padding_z_top: 140,
+    padding_z_bot: 120,
     offset_x: 0,
     offset_z: 0,
-    rotation: 230,
-    flip_x: false
+    rotation: 210,
+    flip_x: true
 };
 
 const MapSettingsDefault = {
