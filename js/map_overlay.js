@@ -13,6 +13,7 @@ function Objective(pos_x, pos_y, radius, col_r, col_g, col_b){
 
 
 const MapSettingsClassic = {
+    image_path: "TNH_Map.png",
     padding_x_left: 75,
     padding_x_right: 75,
     padding_z_top: 40,
@@ -24,6 +25,7 @@ const MapSettingsClassic = {
 };
 
 const MapSettingsNorthestDakota = {
+    image_path: "TNH_Winter_Map.png",
     padding_x_left: 40,
     padding_x_right: 40,
     padding_z_top: 40,
@@ -35,6 +37,7 @@ const MapSettingsNorthestDakota = {
 };
 
 const MapSettingsIslandCompound = {
+    image_path: "IslandCompound",
     padding_x_left: 60,
     padding_x_right: 100,
     padding_z_top: 140,
@@ -45,7 +48,20 @@ const MapSettingsIslandCompound = {
     flip_x: true
 };
 
+const MapSettingsHotelHotlink = {
+    image_path: "TNH_Map_Hotlink.png",
+    padding_x_left: 230,
+    padding_x_right: 130,
+    padding_z_top: 110,
+    padding_z_bot: 30,
+    offset_x: 0,
+    offset_z: 0,
+    rotation: 180,
+    flip_x: true
+};
+
 const MapSettingsDefault = {
+    image_path: "No_Map_Image.png",
     padding_x_left: 40,
     padding_x_right: 40,
     padding_z_top: 40,
@@ -85,7 +101,8 @@ function MapCanvas(canvas_element){
         var background = new Image();
 
         self.map = map;
-        background.src = self.GetMapPath(map);
+        var map_settings = self.GetMapSettings(map);
+        background.src = map_settings.image_path;
     
         self.cancel_token.do_cancel = true;
         self.cancel_token = {};
@@ -104,7 +121,7 @@ function MapCanvas(canvas_element){
                 data.supplyPointLocations = JSON.parse(data.supplyPointLocations);
                 self.map_data = data;
 
-                self.FitMapData(self.map_data, self.GetMapSettings(map));
+                self.FitMapData(self.map_data, map_settings);
 
                 //Draw the background
                 self.ctx.drawImage(background,0,0, self.map_width, self.map_height);
@@ -137,20 +154,6 @@ function MapCanvas(canvas_element){
         }
     };
 
-    this.GetMapPath = function(map){
-        if(map == MAPS[0]){
-            return "TNH_Map.png";
-        }
-        else if(map == MAPS[1]){
-            return "TNH_Winter_Map.png";
-        }
-        else if(map == "IslandCompound"){
-            return "Island_Compound_Map.png";
-        }
-        else{
-            return "No_Map_Image.png";
-        }
-    }
 
     this.GetMapSettings = function(map){
         if(map == MAPS[0]){
@@ -161,6 +164,9 @@ function MapCanvas(canvas_element){
         }
         else if(map == "IslandCompound"){
             return MapSettingsIslandCompound;
+        }
+        else if(map == "HotelHotlink"){
+            return MapSettingsHotelHotlink;
         }
         else{
             return MapSettingsDefault;
