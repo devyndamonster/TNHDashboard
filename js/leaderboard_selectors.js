@@ -6,6 +6,7 @@ const EQUIPMENT_MODES = ["Limited", "Spawnlock"];
 const GAME_LENGTHS = ["5-Hold", "3-Hold", "Endless"];
 const HEALTH_MODES = ["Standard", "One-Hit"];
 
+const MAX_PAGE_BUTTONS = 5;
 
 var selection_character = {'selection' : CHARACTERS[0]}
 var selection_map = {'selection' : MAPS[0]};
@@ -14,6 +15,7 @@ var selection_length = {'selection' : GAME_LENGTHS[0]};
 var selection_health = {'selection' : HEALTH_MODES[0]};
 
 var curr_page = 0;
+var page_count = 0;
 
 var score_container = {};
 var page_button_container = {};
@@ -102,8 +104,36 @@ function SearchForPlayer(name){
   PopulateScoreContainer(GetScoreSearchURL(name));
 }
 
+
+
+function SetScoreContainerLoading(){
+  score_container.innerHTML = "";
+
+  for(let j = 0; j < 10; j++){
+    const button = document.createElement("button");
+    button.classList.add("btn");
+    button.classList.add("w-100");
+    button.classList.add("score-list-button");
+    score_container.appendChild(button);
+    button.innerHTML = "";
+  
+    if(j == 0){
+      button.innerHTML += "<a class=\"score-name\">" + "Loading Scores..." + "</a>";
+    }
+    else{
+      button.innerHTML += "<a class=\"score-name\"> - </a>";
+    }
+  }
+}
+
+
+
+
 function PopulateScoreContainer(url){
   
+  //First fill the score container with empty loading text
+  SetScoreContainerLoading();
+
   $.ajax({
     url: url,
     type: 'GET',
@@ -151,105 +181,106 @@ function PopulateScoreContainer(url){
 
 
 
-function PopulatePageButtons(){
+function UpdatePageButtons(){
   var url = GetScoreSelectionCountURL();
-
   $.get(url, function(data, status){
-
-    var page_count = Math.max(1, Math.floor((data - 1) / 10) + 1);
-    page_buttons = [];
-    page_button_container.innerHTML = "";
-
-    console.log("Page count: " + page_count + ", Scores: " + data);
-    
-    //Create the previous page button
-    const prev_li = document.createElement("li");
-    prev_li.classList.add("page-item");
-    page_button_container.appendChild(prev_li);
-
-    const prev_button = document.createElement("button");
-    prev_button.classList.add("page-link");
-    prev_button.classList.add("tnh-button-style");
-    prev_button.innerHTML = "&laquo;"
-    prev_li.appendChild(prev_button);
-
-    prev_button.onclick = function(){
-      console.log("Prev Page");
-      var next_page = Math.max(0, curr_page - 1);
-      if(curr_page != next_page){
-        curr_page = next_page;
-
-        for(let j = 0; j < page_buttons.length; j++){
-          page_buttons[j].classList.remove('selected');
-        }
-
-        page_buttons[curr_page].classList.add('selected');
-        PopulateScoreContainer(GetScoreSelectionURL(curr_page));
-      }
-    }
-
-    //Create Middle Page Buttons
-    for(let i = 0; i < page_count; i++){
-      const page_li = document.createElement("li");
-      page_li.classList.add("page-item");
-      page_button_container.appendChild(page_li);
-
-      const page_button = document.createElement("button");
-      page_button.classList.add("page-link");
-      page_button.classList.add("tnh-button-style");
-      page_button.innerHTML = (i + 1);
-      page_li.appendChild(page_button);
-
-      if(i == 0){
-        page_button.classList.add('selected');
-      }
-
-      page_buttons.push(page_button);
-
-      page_button.onclick = function(){
-        console.log("Go to page: " + i);
-        var next_page = i;
-        if(curr_page != next_page){
-          curr_page = next_page
-
-          for(let j = 0; j < page_buttons.length; j++){
-            page_buttons[j].classList.remove('selected');
-          }
-
-          page_buttons[curr_page].classList.add('selected');
-          PopulateScoreContainer(GetScoreSelectionURL(curr_page));
-        }
-      }
-    }
-
-    //Create Next Page Buttons
-    const next_li = document.createElement("li");
-    next_li.classList.add("page-item");
-    page_button_container.appendChild(next_li);
-
-    const next_button = document.createElement("button");
-    next_button.classList.add("page-link");
-    next_button.classList.add("tnh-button-style");
-    next_button.innerHTML = "&raquo;"
-    next_li.appendChild(next_button);
-
-    next_button.onclick = function(){
-      console.log("Next Page");
-
-      var next_page = Math.min(page_count - 1, curr_page + 1);
-      if(curr_page != next_page){
-        curr_page = next_page;
-
-        for(let j = 0; j < page_buttons.length; j++){
-          page_buttons[j].classList.remove('selected');
-        }
-
-        page_buttons[curr_page].classList.add('selected');
-        PopulateScoreContainer(GetScoreSelectionURL(curr_page));
-      }
-    }
-
+    page_count = Math.max(1, Math.floor((data - 1) / 10) + 1);
+    PopulatePageButtons();
   });
+}
+
+
+function PopulatePageButtons(){
+  
+  page_buttons = [];
+  page_button_container.innerHTML = "";
+
+  //console.log("Page count: " + page_count + ", Scores: " + data);
+  
+  //Create the previous page button
+  const prev_li = document.createElement("li");
+  prev_li.classList.add("page-item");
+  page_button_container.appendChild(prev_li);
+
+  const prev_button = document.createElement("button");
+  prev_button.classList.add("page-link");
+  prev_button.classList.add("tnh-button-style");
+  prev_button.innerHTML = "&laquo;"
+  prev_li.appendChild(prev_button);
+
+  prev_button.onclick = function(){
+    console.log("Prev Page");
+    var next_page = Math.max(0, curr_page - 1);
+    if(curr_page != next_page){
+      curr_page = next_page;
+      PopulatePageButtons();
+    }
+  }
+
+  //Create Middle Page Buttons
+  var start_index = 0;
+  var end_index = MAX_PAGE_BUTTONS - 1;
+  var half_size = Math.floor(MAX_PAGE_BUTTONS / 2);
+  if(curr_page > half_size && page_count - curr_page > half_size){
+    start_index = curr_page - 2;
+    end_index = curr_page + 2;
+  }
+  else if (page_count - curr_page <= half_size){
+    start_index = page_count - MAX_PAGE_BUTTONS;
+    end_index = page_count - 1;
+  }
+  
+  for(let i = start_index; i <= end_index; i++){
+
+    const page_li = document.createElement("li");
+    page_li.classList.add("page-item");
+    page_button_container.appendChild(page_li);
+
+    const page_button = document.createElement("button");
+    page_button.classList.add("page-link");
+    page_button.classList.add("tnh-button-style");
+    page_button.innerHTML = (i + 1);
+    page_li.appendChild(page_button);
+
+    if(i == curr_page){
+      page_button.classList.add('selected');
+    }
+
+    page_buttons.push(page_button);
+
+    page_button.onclick = function(){
+      console.log("Go to page: " + i);
+      var next_page = i;
+      if(curr_page != next_page){
+        curr_page = next_page
+        PopulatePageButtons();
+      }
+    }
+  }
+
+  //Create Next Page Buttons
+  const next_li = document.createElement("li");
+  next_li.classList.add("page-item");
+  page_button_container.appendChild(next_li);
+
+  const next_button = document.createElement("button");
+  next_button.classList.add("page-link");
+  next_button.classList.add("tnh-button-style");
+  next_button.innerHTML = "&raquo;"
+  next_li.appendChild(next_button);
+
+  next_button.onclick = function(){
+    console.log("Next Page");
+    var next_page = Math.min(page_count - 1, curr_page + 1);
+    if(curr_page != next_page){
+      curr_page = next_page;
+      PopulatePageButtons();
+    }
+  }
+
+  //Now that we have set the current page, list the scores
+  PopulateScoreContainer(GetScoreSelectionURL(curr_page));
+  
 }
 
 
@@ -441,7 +472,7 @@ function PopulateButtonList(dropdown_body, dropdown_text, option_list, selection
 
       curr_page = 0;
       PopulateScoreContainer(GetScoreSelectionURL(curr_page));
-      PopulatePageButtons();
+      UpdatePageButtons();
     };
   }
 }
@@ -499,7 +530,7 @@ document.addEventListener("DOMContentLoaded", function(){
   PopulateButtonList(health_list, dropdown_health, HEALTH_MODES, selection_health, "button-health-");
 
   PopulateScoreContainer(GetScoreSelectionURL(curr_page));
-  PopulatePageButtons();
+  UpdatePageButtons();
 
   GetUserContentSelections();
 
